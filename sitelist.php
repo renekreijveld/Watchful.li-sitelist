@@ -132,11 +132,9 @@ switch ($task) {
 			.jumbotron {padding: 16px 0}
 			.jumbotron h1 {margin-top: 10px}
 		</style>
-
 	</head>
 
 	<body>
-
 		<div class="jumbotron">
 			<div class="container">
 				<h1>Watchful.li sitelist</h1>
@@ -145,15 +143,11 @@ switch ($task) {
 		</div>
 
 		<div class="container">
-
 			<?php echo $SitesData; ?>
-
 			<hr>
-
 			<footer>
 				<p style="font-size: 12px;">Data collected <i class="fa fa-calendar"></i> <?php echo date("Y-m-d"); ?> <i class="fa fa-clock-o"></i> <?php echo date("H:i:s"); ?>, written by <a href="http://about.me/renekreijveld" target="_blank">René Kreijveld</a>. All data collected through <a href="https://watchful.li/support-services/kb/article/watchful-rest-api" target="_blank">Watchful REST API</a>.</p>
 			</footer>
-		</div> <!-- /container -->
-
+		</div>
 	</body>
 </html>

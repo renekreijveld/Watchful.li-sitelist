@@ -44,9 +44,9 @@ switch ($task) {
 		$start = $sitesdata[0];
 		$objPHPExcel = new PHPExcel();
 		$objPHPExcel->getProperties()->setCreator("Watchful.li")
-									 ->setLastModifiedBy("Watchful.li")
-									 ->setTitle("Watchful.li sitelist")
-									 ->setSubject("Watchful.li sitelist");
+		 ->setLastModifiedBy("Watchful.li")
+		 ->setTitle("Watchful.li sitelist")
+		 ->setSubject("Watchful.li sitelist");
 		$objPHPExcel->setActiveSheetIndex(0);
 		$rowArray = [];
 		foreach ((array)$start as $var => $value)

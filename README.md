@@ -12,4 +12,4 @@ Install the API key on line 10 of sitelist.php.
 
 * Add your Watchful.li API key in the sitelist.php file.
 
-* Go to your website: http://www.your-website.com/sitelsit/sitelist.php
+* Go to your website: http://www.your-website.com/sitelist/sitelist.php

@@ -208,12 +208,12 @@ class PHPExcel_Calculation
     public $cyclicFormulaCount = 1;
 
     /**
-     * Precision used for calculations
+     * Epsilon Precision used for comparisons in calculations
      *
-     * @var integer
+     * @var float
      *
      */
-    private $savedPrecision    = 14;
+    private $delta    = 0.1e-12;
 
 
     /**
@@ -1497,7 +1497,7 @@ class PHPExcel_Calculation
         'OFFSET' => array(
             'category' => PHPExcel_Calculation_Function::CATEGORY_LOOKUP_AND_REFERENCE,
             'functionCall' => 'PHPExcel_Calculation_LookupRef::OFFSET',
-            'argumentCount' => '3,5',
+            'argumentCount' => '3-5',
             'passCellReference' => true,
             'passByReference' => array(true)
         ),
@@ -1814,8 +1814,8 @@ class PHPExcel_Calculation
         ),
         'SUMIFS' => array(
             'category' => PHPExcel_Calculation_Function::CATEGORY_MATH_AND_TRIG,
-            'functionCall' => 'PHPExcel_Calculation_Functions::DUMMY',
-            'argumentCount' => '?'
+            'functionCall' => 'PHPExcel_Calculation_MathTrig::SUMIFS',
+            'argumentCount' => '3+'
         ),
         'SUMPRODUCT' => array(
             'category' => PHPExcel_Calculation_Function::CATEGORY_MATH_AND_TRIG,
@@ -2068,31 +2068,15 @@ class PHPExcel_Calculation
     );
 
 
-    private function __construct(PHPExcel $workbook = null)
+    public function __construct(PHPExcel $workbook = null)
     {
-        $setPrecision = (PHP_INT_SIZE == 4) ? 14 : 16;
-        $this->savedPrecision = ini_get('precision');
-        if ($this->savedPrecision < $setPrecision) {
-            ini_set('precision', $setPrecision);
-        }
-        $this->delta = 1 * pow(10, -$setPrecision);
-
-        if ($workbook !== null) {
-            self::$workbookSets[$workbook->getID()] = $this;
-        }
+        $this->delta = 1 * pow(10, 0 - ini_get('precision'));
 
         $this->workbook = $workbook;
         $this->cyclicReferenceStack = new PHPExcel_CalcEngine_CyclicReferenceStack();
         $this->_debugLog = new PHPExcel_CalcEngine_Logger($this->cyclicReferenceStack);
     }
 
-
-    public function __destruct()
-    {
-        if ($this->savedPrecision != ini_get('precision')) {
-            ini_set('precision', $this->savedPrecision);
-        }
-    }
 
     private static function loadLocales()
     {
@@ -2116,16 +2100,15 @@ class PHPExcel_Calculation
     public static function getInstance(PHPExcel $workbook = null)
     {
         if ($workbook !== null) {
-            if (isset(self::$workbookSets[$workbook->getID()])) {
-                return self::$workbookSets[$workbook->getID()];
+            $instance = $workbook->getCalculationEngine();
+            if (isset($instance)) {
+                return $instance;  
             }
-            return new PHPExcel_Calculation($workbook);
         }
 
         if (!isset(self::$instance) || (self::$instance === null)) {
             self::$instance = new PHPExcel_Calculation();
         }
-
         return self::$instance;
     }
 
@@ -2133,15 +2116,10 @@ class PHPExcel_Calculation
      * Unset an instance of this class
      *
      * @access    public
-     * @param   PHPExcel $workbook  Injected workbook identifying the instance to unset
      */
-    public static function unsetInstance(PHPExcel $workbook = null)
+    public function __destruct()
     {
-        if ($workbook !== null) {
-            if (isset(self::$workbookSets[$workbook->getID()])) {
-                unset(self::$workbookSets[$workbook->getID()]);
-            }
-        }
+        $this->workbook = null;
     }
 
     /**

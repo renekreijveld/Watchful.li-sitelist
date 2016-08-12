@@ -724,7 +724,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
         if (!$this->readDataOnly) {
             foreach ($this->objFonts as $objFont) {
                 if (isset($objFont->colorIndex)) {
-                    $color = self::readColor($objFont->colorIndex, $this->palette, $this->version);
+                    $color = PHPExcel_Reader_Excel5_Color::map($objFont->colorIndex, $this->palette, $this->version);
                     $objFont->getColor()->setRGB($color['rgb']);
                 }
             }
@@ -734,11 +734,11 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
                 $fill = $objStyle->getFill();
 
                 if (isset($fill->startcolorIndex)) {
-                    $startColor = self::readColor($fill->startcolorIndex, $this->palette, $this->version);
+                    $startColor = PHPExcel_Reader_Excel5_Color::map($fill->startcolorIndex, $this->palette, $this->version);
                     $fill->getStartColor()->setRGB($startColor['rgb']);
                 }
                 if (isset($fill->endcolorIndex)) {
-                    $endColor = self::readColor($fill->endcolorIndex, $this->palette, $this->version);
+                    $endColor = PHPExcel_Reader_Excel5_Color::map($fill->endcolorIndex, $this->palette, $this->version);
                     $fill->getEndColor()->setRGB($endColor['rgb']);
                 }
 
@@ -750,23 +750,23 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
                 $diagonal = $objStyle->getBorders()->getDiagonal();
 
                 if (isset($top->colorIndex)) {
-                    $borderTopColor = self::readColor($top->colorIndex, $this->palette, $this->version);
+                    $borderTopColor = PHPExcel_Reader_Excel5_Color::map($top->colorIndex, $this->palette, $this->version);
                     $top->getColor()->setRGB($borderTopColor['rgb']);
                 }
                 if (isset($right->colorIndex)) {
-                    $borderRightColor = self::readColor($right->colorIndex, $this->palette, $this->version);
+                    $borderRightColor = PHPExcel_Reader_Excel5_Color::map($right->colorIndex, $this->palette, $this->version);
                     $right->getColor()->setRGB($borderRightColor['rgb']);
                 }
                 if (isset($bottom->colorIndex)) {
-                    $borderBottomColor = self::readColor($bottom->colorIndex, $this->palette, $this->version);
+                    $borderBottomColor = PHPExcel_Reader_Excel5_Color::map($bottom->colorIndex, $this->palette, $this->version);
                     $bottom->getColor()->setRGB($borderBottomColor['rgb']);
                 }
                 if (isset($left->colorIndex)) {
-                    $borderLeftColor = self::readColor($left->colorIndex, $this->palette, $this->version);
+                    $borderLeftColor = PHPExcel_Reader_Excel5_Color::map($left->colorIndex, $this->palette, $this->version);
                     $left->getColor()->setRGB($borderLeftColor['rgb']);
                 }
                 if (isset($diagonal->colorIndex)) {
-                    $borderDiagonalColor = self::readColor($diagonal->colorIndex, $this->palette, $this->version);
+                    $borderDiagonalColor = PHPExcel_Reader_Excel5_Color::map($diagonal->colorIndex, $this->palette, $this->version);
                     $diagonal->getColor()->setRGB($borderDiagonalColor['rgb']);
                 }
             }
@@ -1753,7 +1753,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
         
         // move stream pointer to next record
         $this->pos += 4 + $length;
-        
+
         if (!$this->verifyPassword('VelvetSweatshop', substr($recordData, 6, 16), substr($recordData, 22, 16), substr($recordData, 38, 16), $this->md5Ctxt)) {
             throw new PHPExcel_Reader_Exception('Decryption password incorrect');
         }
@@ -2209,19 +2209,19 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
 
                 // offset: 10; size: 4; Cell border lines and background area
                 // bit: 3-0; mask: 0x0000000F; left style
-                if ($bordersLeftStyle = self::mapBorderStyle((0x0000000F & self::getInt4d($recordData, 10)) >> 0)) {
+                if ($bordersLeftStyle = PHPExcel_Reader_Excel5_Style_Border::lookup((0x0000000F & self::getInt4d($recordData, 10)) >> 0)) {
                     $objStyle->getBorders()->getLeft()->setBorderStyle($bordersLeftStyle);
                 }
                 // bit: 7-4; mask: 0x000000F0; right style
-                if ($bordersRightStyle = self::mapBorderStyle((0x000000F0 & self::getInt4d($recordData, 10)) >> 4)) {
+                if ($bordersRightStyle = PHPExcel_Reader_Excel5_Style_Border::lookup((0x000000F0 & self::getInt4d($recordData, 10)) >> 4)) {
                     $objStyle->getBorders()->getRight()->setBorderStyle($bordersRightStyle);
                 }
                 // bit: 11-8; mask: 0x00000F00; top style
-                if ($bordersTopStyle = self::mapBorderStyle((0x00000F00 & self::getInt4d($recordData, 10)) >> 8)) {
+                if ($bordersTopStyle = PHPExcel_Reader_Excel5_Style_Border::lookup((0x00000F00 & self::getInt4d($recordData, 10)) >> 8)) {
                     $objStyle->getBorders()->getTop()->setBorderStyle($bordersTopStyle);
                 }
                 // bit: 15-12; mask: 0x0000F000; bottom style
-                if ($bordersBottomStyle = self::mapBorderStyle((0x0000F000 & self::getInt4d($recordData, 10)) >> 12)) {
+                if ($bordersBottomStyle = PHPExcel_Reader_Excel5_Style_Border::lookup((0x0000F000 & self::getInt4d($recordData, 10)) >> 12)) {
                     $objStyle->getBorders()->getBottom()->setBorderStyle($bordersBottomStyle);
                 }
                 // bit: 22-16; mask: 0x007F0000; left color
@@ -2257,12 +2257,12 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
                 $objStyle->getBorders()->getDiagonal()->colorIndex = (0x001FC000 & self::getInt4d($recordData, 14)) >> 14;
 
                 // bit: 24-21; mask: 0x01E00000; diagonal style
-                if ($bordersDiagonalStyle = self::mapBorderStyle((0x01E00000 & self::getInt4d($recordData, 14)) >> 21)) {
+                if ($bordersDiagonalStyle = PHPExcel_Reader_Excel5_Style_Border::lookup((0x01E00000 & self::getInt4d($recordData, 14)) >> 21)) {
                     $objStyle->getBorders()->getDiagonal()->setBorderStyle($bordersDiagonalStyle);
                 }
 
                 // bit: 31-26; mask: 0xFC000000 fill pattern
-                if ($fillType = self::mapFillPattern((0xFC000000 & self::getInt4d($recordData, 14)) >> 26)) {
+                if ($fillType = PHPExcel_Reader_Excel5_Style_FillPattern::lookup((0xFC000000 & self::getInt4d($recordData, 14)) >> 26)) {
                     $objStyle->getFill()->setFillType($fillType);
                 }
                 // offset: 18; size: 2; pattern and background colour
@@ -2304,10 +2304,10 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
                 $objStyle->getFill()->endcolorIndex = (0x00003F80 & $borderAndBackground) >> 7;
 
                 // bit: 21-16; mask: 0x003F0000; fill pattern
-                $objStyle->getFill()->setFillType(self::mapFillPattern((0x003F0000 & $borderAndBackground) >> 16));
+                $objStyle->getFill()->setFillType(PHPExcel_Reader_Excel5_Style_FillPattern::lookup((0x003F0000 & $borderAndBackground) >> 16));
 
                 // bit: 24-22; mask: 0x01C00000; bottom line style
-                $objStyle->getBorders()->getBottom()->setBorderStyle(self::mapBorderStyle((0x01C00000 & $borderAndBackground) >> 22));
+                $objStyle->getBorders()->getBottom()->setBorderStyle(PHPExcel_Reader_Excel5_Style_Border::lookup((0x01C00000 & $borderAndBackground) >> 22));
 
                 // bit: 31-25; mask: 0xFE000000; bottom line color
                 $objStyle->getBorders()->getBottom()->colorIndex = (0xFE000000 & $borderAndBackground) >> 25;
@@ -2316,13 +2316,13 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
                 $borderLines = self::getInt4d($recordData, 12);
 
                 // bit: 2-0; mask: 0x00000007; top line style
-                $objStyle->getBorders()->getTop()->setBorderStyle(self::mapBorderStyle((0x00000007 & $borderLines) >> 0));
+                $objStyle->getBorders()->getTop()->setBorderStyle(PHPExcel_Reader_Excel5_Style_Border::lookup((0x00000007 & $borderLines) >> 0));
 
                 // bit: 5-3; mask: 0x00000038; left line style
-                $objStyle->getBorders()->getLeft()->setBorderStyle(self::mapBorderStyle((0x00000038 & $borderLines) >> 3));
+                $objStyle->getBorders()->getLeft()->setBorderStyle(PHPExcel_Reader_Excel5_Style_Border::lookup((0x00000038 & $borderLines) >> 3));
 
                 // bit: 8-6; mask: 0x000001C0; right line style
-                $objStyle->getBorders()->getRight()->setBorderStyle(self::mapBorderStyle((0x000001C0 & $borderLines) >> 6));
+                $objStyle->getBorders()->getRight()->setBorderStyle(PHPExcel_Reader_Excel5_Style_Border::lookup((0x000001C0 & $borderLines) >> 6));
 
                 // bit: 15-9; mask: 0x0000FE00; top line color index
                 $objStyle->getBorders()->getTop()->colorIndex = (0x0000FE00 & $borderLines) >> 9;
@@ -3687,6 +3687,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
         $column = self::getInt2d($recordData, 2);
         $columnString = PHPExcel_Cell::stringFromColumnIndex($column);
 
+        $emptyCell = true;
         // Read cell?
         if (($this->getReadFilter() !== null) && $this->getReadFilter()->readCell($columnString, $row + 1, $this->phpSheet->getTitle())) {
             // offset: 4; size: 2; index to XF record
@@ -3727,14 +3728,20 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
                         }
                     }
                 }
-                $cell = $this->phpSheet->getCell($columnString . ($row + 1));
-                $cell->setValueExplicit($richText, PHPExcel_Cell_DataType::TYPE_STRING);
+                if ($this->readEmptyCells || trim($richText->getPlainText()) !== '') {
+                    $cell = $this->phpSheet->getCell($columnString . ($row + 1));
+                    $cell->setValueExplicit($richText, PHPExcel_Cell_DataType::TYPE_STRING);
+                    $emptyCell = false;
+                }
             } else {
-                $cell = $this->phpSheet->getCell($columnString . ($row + 1));
-                $cell->setValueExplicit($this->sst[$index]['value'], PHPExcel_Cell_DataType::TYPE_STRING);
+                if ($this->readEmptyCells || trim($this->sst[$index]['value']) !== '') {
+                    $cell = $this->phpSheet->getCell($columnString . ($row + 1));
+                    $cell->setValueExplicit($this->sst[$index]['value'], PHPExcel_Cell_DataType::TYPE_STRING);
+                    $emptyCell = false;
+                }
             }
 
-            if (!$this->readDataOnly) {
+            if (!$this->readDataOnly && !$emptyCell) {
                 // add style information
                 $cell->setXfIndex($this->mapCellXfIndex[$xfIndex]);
             }
@@ -3922,7 +3929,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
                 && (ord($recordData{13}) == 255)) {
                 // Error formula. Error code is in +2
                 $dataType = PHPExcel_Cell_DataType::TYPE_ERROR;
-                $value = self::mapErrorCode(ord($recordData{8}));
+                $value = PHPExcel_Reader_Excel5_ErrorCode::lookup(ord($recordData{8}));
             } elseif ((ord($recordData{6}) == 3)
                 && (ord($recordData{12}) == 255)
                 && (ord($recordData{13}) == 255)) {
@@ -4069,7 +4076,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
                     $cell->setValueExplicit($value, PHPExcel_Cell_DataType::TYPE_BOOL);
                     break;
                 case 1: // error type
-                    $value = self::mapErrorCode($boolErr);
+                    $value = PHPExcel_Reader_Excel5_ErrorCode::lookup($boolErr);
 
                     // add cell value
                     $cell->setValueExplicit($value, PHPExcel_Cell_DataType::TYPE_ERROR);
@@ -4108,7 +4115,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
 
         // offset: 4; size: 2 x nc; list of indexes to XF records
         // add style information
-        if (!$this->readDataOnly) {
+        if (!$this->readDataOnly && $this->readEmptyCells) {
             for ($i = 0; $i < $length / 2 - 3; ++$i) {
                 $columnString = PHPExcel_Cell::stringFromColumnIndex($fc + $i);
 
@@ -4163,12 +4170,14 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
                 $string = $this->readByteStringLong(substr($recordData, 6));
                 $value = $string['value'];
             }
-            $cell = $this->phpSheet->getCell($columnString . ($row + 1));
-            $cell->setValueExplicit($value, PHPExcel_Cell_DataType::TYPE_STRING);
+            if ($this->readEmptyCells || trim($value) !== '') {
+                $cell = $this->phpSheet->getCell($columnString . ($row + 1));
+                $cell->setValueExplicit($value, PHPExcel_Cell_DataType::TYPE_STRING);
 
-            if (!$this->readDataOnly) {
-                // add cell style
-                $cell->setXfIndex($this->mapCellXfIndex[$xfIndex]);
+                if (!$this->readDataOnly) {
+                    // add cell style
+                    $cell->setXfIndex($this->mapCellXfIndex[$xfIndex]);
+                }
             }
         }
     }
@@ -4198,11 +4207,10 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
             $xfIndex = self::getInt2d($recordData, 4);
 
             // add style information
-            if (!$this->readDataOnly) {
+            if (!$this->readDataOnly && $this->readEmptyCells) {
                 $this->phpSheet->getCell($columnString . ($row + 1))->setXfIndex($this->mapCellXfIndex[$xfIndex]);
             }
         }
-
     }
 
 
@@ -4929,7 +4937,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
                 case 0x14:
                     // offset: 16; size: 2; color index for sheet tab
                     $colorIndex = self::getInt2d($recordData, 16);
-                    $color = self::readColor($colorIndex, $this->palette, $this->version);
+                    $color = PHPExcel_Reader_Excel5_Color::map($colorIndex, $this->palette, $this->version);
                     $this->phpSheet->getTabColor()->setRGB($color['rgb']);
                     break;
                 case 0x28:
@@ -5457,7 +5465,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
                     unset($space2, $space3, $space4, $space5);
                     break;
                 case 'tArray': // array constant
-                    $constantArray = self::_readBIFF8ConstantArray($additionalData);
+                    $constantArray = self::readBIFF8ConstantArray($additionalData);
                     $formulaStrings[] = $space1 . $space0 . $constantArray['value'];
                     $additionalData = substr($additionalData, $constantArray['size']); // bite of chunk of additional data
                     unset($space0, $space1);
@@ -5696,7 +5704,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
                 // offset: 1; size: 1; error code
                 $name = 'tErr';
                 $size = 2;
-                $data = self::mapErrorCode(ord($formulaData[1]));
+                $data = PHPExcel_Reader_Excel5_ErrorCode::lookup(ord($formulaData[1]));
                 break;
             case 0x1D:    //    boolean
                 // offset: 1; size: 1; 0 = false, 1 = true;
@@ -7209,7 +7217,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
         for ($r = 1; $r <= $nr + 1; ++$r) {
             $items = array();
             for ($c = 1; $c <= $nc + 1; ++$c) {
-                $constant = self::_readBIFF8Constant($arrayData);
+                $constant = self::readBIFF8Constant($arrayData);
                 $items[] = $constant['value'];
                 $arrayData = substr($arrayData, $constant['size']);
                 $size += $constant['size'];
@@ -7265,7 +7273,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
                 break;
             case 0x10: // error code
                 // offset: 1; size: 1; error code
-                $value = self::mapErrorCode(ord($valueData[1]));
+                $value = PHPExcel_Reader_Excel5_ErrorCode::lookup(ord($valueData[1]));
                 $size = 9;
                 break;
         }
@@ -7514,7 +7522,6 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
         return PHPExcel_Shared_String::ConvertEncoding($string, 'UTF-8', 'UTF-16LE');
     }
 
-
     /**
      * Convert UTF-16 string in compressed notation to uncompressed form. Only used for BIFF8.
      *
@@ -7532,7 +7539,6 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
         return $uncompressedString;
     }
 
-
     /**
      * Convert string to UTF-8. Only used for BIFF5.
      *
@@ -7543,7 +7549,6 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
     {
         return PHPExcel_Shared_String::ConvertEncoding($string, 'UTF-8', $this->codepage);
     }
-
 
     /**
      * Read 16-bit unsigned integer
@@ -7556,7 +7561,6 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
     {
         return ord($data[$pos]) | (ord($data[$pos+1]) << 8);
     }
-
 
     /**
      * Read 32-bit signed integer
@@ -7578,458 +7582,6 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
             $_ord_24 = ($_or_24 & 127) << 24;
         }
         return ord($data[$pos]) | (ord($data[$pos+1]) << 8) | (ord($data[$pos+2]) << 16) | $_ord_24;
-    }
-
-
-    /**
-     * Read color
-     *
-     * @param int $color Indexed color
-     * @param array $palette Color palette
-     * @return array RGB color value, example: array('rgb' => 'FF0000')
-     */
-    private static function readColor($color, $palette, $version)
-    {
-        if ($color <= 0x07 || $color >= 0x40) {
-            // special built-in color
-            return self::mapBuiltInColor($color);
-        } elseif (isset($palette) && isset($palette[$color - 8])) {
-            // palette color, color index 0x08 maps to pallete index 0
-            return $palette[$color - 8];
-        } else {
-            // default color table
-            if ($version == self::XLS_BIFF8) {
-                return self::mapColor($color);
-            } else {
-                // BIFF5
-                return self::mapColorBIFF5($color);
-            }
-        }
-
-        return $color;
-    }
-
-
-    /**
-     * Map border style
-     * OpenOffice documentation: 2.5.11
-     *
-     * @param int $index
-     * @return string
-     */
-    private static function mapBorderStyle($index)
-    {
-        switch ($index) {
-            case 0x00:
-                return PHPExcel_Style_Border::BORDER_NONE;
-            case 0x01:
-                return PHPExcel_Style_Border::BORDER_THIN;
-            case 0x02:
-                return PHPExcel_Style_Border::BORDER_MEDIUM;
-            case 0x03:
-                return PHPExcel_Style_Border::BORDER_DASHED;
-            case 0x04:
-                return PHPExcel_Style_Border::BORDER_DOTTED;
-            case 0x05:
-                return PHPExcel_Style_Border::BORDER_THICK;
-            case 0x06:
-                return PHPExcel_Style_Border::BORDER_DOUBLE;
-            case 0x07:
-                return PHPExcel_Style_Border::BORDER_HAIR;
-            case 0x08:
-                return PHPExcel_Style_Border::BORDER_MEDIUMDASHED;
-            case 0x09:
-                return PHPExcel_Style_Border::BORDER_DASHDOT;
-            case 0x0A:
-                return PHPExcel_Style_Border::BORDER_MEDIUMDASHDOT;
-            case 0x0B:
-                return PHPExcel_Style_Border::BORDER_DASHDOTDOT;
-            case 0x0C:
-                return PHPExcel_Style_Border::BORDER_MEDIUMDASHDOTDOT;
-            case 0x0D:
-                return PHPExcel_Style_Border::BORDER_SLANTDASHDOT;
-            default:
-                return PHPExcel_Style_Border::BORDER_NONE;
-        }
-    }
-
-
-    /**
-     * Get fill pattern from index
-     * OpenOffice documentation: 2.5.12
-     *
-     * @param int $index
-     * @return string
-     */
-    private static function mapFillPattern($index)
-    {
-        switch ($index) {
-            case 0x00:
-                return PHPExcel_Style_Fill::FILL_NONE;
-            case 0x01:
-                return PHPExcel_Style_Fill::FILL_SOLID;
-            case 0x02:
-                return PHPExcel_Style_Fill::FILL_PATTERN_MEDIUMGRAY;
-            case 0x03:
-                return PHPExcel_Style_Fill::FILL_PATTERN_DARKGRAY;
-            case 0x04:
-                return PHPExcel_Style_Fill::FILL_PATTERN_LIGHTGRAY;
-            case 0x05:
-                return PHPExcel_Style_Fill::FILL_PATTERN_DARKHORIZONTAL;
-            case 0x06:
-                return PHPExcel_Style_Fill::FILL_PATTERN_DARKVERTICAL;
-            case 0x07:
-                return PHPExcel_Style_Fill::FILL_PATTERN_DARKDOWN;
-            case 0x08:
-                return PHPExcel_Style_Fill::FILL_PATTERN_DARKUP;
-            case 0x09:
-                return PHPExcel_Style_Fill::FILL_PATTERN_DARKGRID;
-            case 0x0A:
-                return PHPExcel_Style_Fill::FILL_PATTERN_DARKTRELLIS;
-            case 0x0B:
-                return PHPExcel_Style_Fill::FILL_PATTERN_LIGHTHORIZONTAL;
-            case 0x0C:
-                return PHPExcel_Style_Fill::FILL_PATTERN_LIGHTVERTICAL;
-            case 0x0D:
-                return PHPExcel_Style_Fill::FILL_PATTERN_LIGHTDOWN;
-            case 0x0E:
-                return PHPExcel_Style_Fill::FILL_PATTERN_LIGHTUP;
-            case 0x0F:
-                return PHPExcel_Style_Fill::FILL_PATTERN_LIGHTGRID;
-            case 0x10:
-                return PHPExcel_Style_Fill::FILL_PATTERN_LIGHTTRELLIS;
-            case 0x11:
-                return PHPExcel_Style_Fill::FILL_PATTERN_GRAY125;
-            case 0x12:
-                return PHPExcel_Style_Fill::FILL_PATTERN_GRAY0625;
-            default:
-                return PHPExcel_Style_Fill::FILL_NONE;
-        }
-    }
-
-
-    /**
-     * Map error code, e.g. '#N/A'
-     *
-     * @param int $subData
-     * @return string
-     */
-    private static function mapErrorCode($subData)
-    {
-        switch ($subData) {
-            case 0x00:
-                return '#NULL!';
-                break;
-            case 0x07:
-                return '#DIV/0!';
-                break;
-            case 0x0F:
-                return '#VALUE!';
-                break;
-            case 0x17:
-                return '#REF!';
-                break;
-            case 0x1D:
-                return '#NAME?';
-                break;
-            case 0x24:
-                return '#NUM!';
-                break;
-            case 0x2A:
-                return '#N/A';
-                break;
-            default:
-                return false;
-        }
-    }
-
-
-    /**
-     * Map built-in color to RGB value
-     *
-     * @param int $color Indexed color
-     * @return array
-     */
-    private static function mapBuiltInColor($color)
-    {
-        switch ($color) {
-            case 0x00:
-                return array('rgb' => '000000');
-            case 0x01:
-                return array('rgb' => 'FFFFFF');
-            case 0x02:
-                return array('rgb' => 'FF0000');
-            case 0x03:
-                return array('rgb' => '00FF00');
-            case 0x04:
-                return array('rgb' => '0000FF');
-            case 0x05:
-                return array('rgb' => 'FFFF00');
-            case 0x06:
-                return array('rgb' => 'FF00FF');
-            case 0x07:
-                return array('rgb' => '00FFFF');
-            case 0x40:
-                return array('rgb' => '000000'); // system window text color
-            case 0x41:
-                return array('rgb' => 'FFFFFF'); // system window background color
-            default:
-                return array('rgb' => '000000');
-        }
-    }
-
-
-    /**
-     * Map color array from BIFF5 built-in color index
-     *
-     * @param int $subData
-     * @return array
-     */
-    private static function mapColorBIFF5($subData)
-    {
-        switch ($subData) {
-            case 0x08:
-                return array('rgb' => '000000');
-            case 0x09:
-                return array('rgb' => 'FFFFFF');
-            case 0x0A:
-                return array('rgb' => 'FF0000');
-            case 0x0B:
-                return array('rgb' => '00FF00');
-            case 0x0C:
-                return array('rgb' => '0000FF');
-            case 0x0D:
-                return array('rgb' => 'FFFF00');
-            case 0x0E:
-                return array('rgb' => 'FF00FF');
-            case 0x0F:
-                return array('rgb' => '00FFFF');
-            case 0x10:
-                return array('rgb' => '800000');
-            case 0x11:
-                return array('rgb' => '008000');
-            case 0x12:
-                return array('rgb' => '000080');
-            case 0x13:
-                return array('rgb' => '808000');
-            case 0x14:
-                return array('rgb' => '800080');
-            case 0x15:
-                return array('rgb' => '008080');
-            case 0x16:
-                return array('rgb' => 'C0C0C0');
-            case 0x17:
-                return array('rgb' => '808080');
-            case 0x18:
-                return array('rgb' => '8080FF');
-            case 0x19:
-                return array('rgb' => '802060');
-            case 0x1A:
-                return array('rgb' => 'FFFFC0');
-            case 0x1B:
-                return array('rgb' => 'A0E0F0');
-            case 0x1C:
-                return array('rgb' => '600080');
-            case 0x1D:
-                return array('rgb' => 'FF8080');
-            case 0x1E:
-                return array('rgb' => '0080C0');
-            case 0x1F:
-                return array('rgb' => 'C0C0FF');
-            case 0x20:
-                return array('rgb' => '000080');
-            case 0x21:
-                return array('rgb' => 'FF00FF');
-            case 0x22:
-                return array('rgb' => 'FFFF00');
-            case 0x23:
-                return array('rgb' => '00FFFF');
-            case 0x24:
-                return array('rgb' => '800080');
-            case 0x25:
-                return array('rgb' => '800000');
-            case 0x26:
-                return array('rgb' => '008080');
-            case 0x27:
-                return array('rgb' => '0000FF');
-            case 0x28:
-                return array('rgb' => '00CFFF');
-            case 0x29:
-                return array('rgb' => '69FFFF');
-            case 0x2A:
-                return array('rgb' => 'E0FFE0');
-            case 0x2B:
-                return array('rgb' => 'FFFF80');
-            case 0x2C:
-                return array('rgb' => 'A6CAF0');
-            case 0x2D:
-                return array('rgb' => 'DD9CB3');
-            case 0x2E:
-                return array('rgb' => 'B38FEE');
-            case 0x2F:
-                return array('rgb' => 'E3E3E3');
-            case 0x30:
-                return array('rgb' => '2A6FF9');
-            case 0x31:
-                return array('rgb' => '3FB8CD');
-            case 0x32:
-                return array('rgb' => '488436');
-            case 0x33:
-                return array('rgb' => '958C41');
-            case 0x34:
-                return array('rgb' => '8E5E42');
-            case 0x35:
-                return array('rgb' => 'A0627A');
-            case 0x36:
-                return array('rgb' => '624FAC');
-            case 0x37:
-                return array('rgb' => '969696');
-            case 0x38:
-                return array('rgb' => '1D2FBE');
-            case 0x39:
-                return array('rgb' => '286676');
-            case 0x3A:
-                return array('rgb' => '004500');
-            case 0x3B:
-                return array('rgb' => '453E01');
-            case 0x3C:
-                return array('rgb' => '6A2813');
-            case 0x3D:
-                return array('rgb' => '85396A');
-            case 0x3E:
-                return array('rgb' => '4A3285');
-            case 0x3F:
-                return array('rgb' => '424242');
-            default:
-                return array('rgb' => '000000');
-        }
-    }
-
-
-    /**
-     * Map color array from BIFF8 built-in color index
-     *
-     * @param int $subData
-     * @return array
-     */
-    private static function mapColor($subData)
-    {
-        switch ($subData) {
-            case 0x08:
-                return array('rgb' => '000000');
-            case 0x09:
-                return array('rgb' => 'FFFFFF');
-            case 0x0A:
-                return array('rgb' => 'FF0000');
-            case 0x0B:
-                return array('rgb' => '00FF00');
-            case 0x0C:
-                return array('rgb' => '0000FF');
-            case 0x0D:
-                return array('rgb' => 'FFFF00');
-            case 0x0E:
-                return array('rgb' => 'FF00FF');
-            case 0x0F:
-                return array('rgb' => '00FFFF');
-            case 0x10:
-                return array('rgb' => '800000');
-            case 0x11:
-                return array('rgb' => '008000');
-            case 0x12:
-                return array('rgb' => '000080');
-            case 0x13:
-                return array('rgb' => '808000');
-            case 0x14:
-                return array('rgb' => '800080');
-            case 0x15:
-                return array('rgb' => '008080');
-            case 0x16:
-                return array('rgb' => 'C0C0C0');
-            case 0x17:
-                return array('rgb' => '808080');
-            case 0x18:
-                return array('rgb' => '9999FF');
-            case 0x19:
-                return array('rgb' => '993366');
-            case 0x1A:
-                return array('rgb' => 'FFFFCC');
-            case 0x1B:
-                return array('rgb' => 'CCFFFF');
-            case 0x1C:
-                return array('rgb' => '660066');
-            case 0x1D:
-                return array('rgb' => 'FF8080');
-            case 0x1E:
-                return array('rgb' => '0066CC');
-            case 0x1F:
-                return array('rgb' => 'CCCCFF');
-            case 0x20:
-                return array('rgb' => '000080');
-            case 0x21:
-                return array('rgb' => 'FF00FF');
-            case 0x22:
-                return array('rgb' => 'FFFF00');
-            case 0x23:
-                return array('rgb' => '00FFFF');
-            case 0x24:
-                return array('rgb' => '800080');
-            case 0x25:
-                return array('rgb' => '800000');
-            case 0x26:
-                return array('rgb' => '008080');
-            case 0x27:
-                return array('rgb' => '0000FF');
-            case 0x28:
-                return array('rgb' => '00CCFF');
-            case 0x29:
-                return array('rgb' => 'CCFFFF');
-            case 0x2A:
-                return array('rgb' => 'CCFFCC');
-            case 0x2B:
-                return array('rgb' => 'FFFF99');
-            case 0x2C:
-                return array('rgb' => '99CCFF');
-            case 0x2D:
-                return array('rgb' => 'FF99CC');
-            case 0x2E:
-                return array('rgb' => 'CC99FF');
-            case 0x2F:
-                return array('rgb' => 'FFCC99');
-            case 0x30:
-                return array('rgb' => '3366FF');
-            case 0x31:
-                return array('rgb' => '33CCCC');
-            case 0x32:
-                return array('rgb' => '99CC00');
-            case 0x33:
-                return array('rgb' => 'FFCC00');
-            case 0x34:
-                return array('rgb' => 'FF9900');
-            case 0x35:
-                return array('rgb' => 'FF6600');
-            case 0x36:
-                return array('rgb' => '666699');
-            case 0x37:
-                return array('rgb' => '969696');
-            case 0x38:
-                return array('rgb' => '003366');
-            case 0x39:
-                return array('rgb' => '339966');
-            case 0x3A:
-                return array('rgb' => '003300');
-            case 0x3B:
-                return array('rgb' => '333300');
-            case 0x3C:
-                return array('rgb' => '993300');
-            case 0x3D:
-                return array('rgb' => '993366');
-            case 0x3E:
-                return array('rgb' => '333399');
-            case 0x3F:
-                return array('rgb' => '333333');
-            default:
-                return array('rgb' => '000000');
-        }
     }
 
     private function parseRichText($is = '')

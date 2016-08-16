@@ -17,5 +17,5 @@ Install the API key on line 10 of sitelist.php.
 Changelog:
 
 16-agu-2016: Integrated jQuery DataTables plugin to allow better display and searching.
-12-aug-2016: Initial version.
 
+12-aug-2016: Initial version.

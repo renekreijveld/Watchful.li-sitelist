@@ -1,7 +1,8 @@
 Watchful.li sitelist
 ====================
 
-With this script you can display a brief overview of all your Watchful.li sites and export the data to Excel.
+With this script you can display an overview of all your Watchful.li sites and export the data to Excel.
+For easy browsing and searching in the site list the jQuery DataTables plugin was added.
 
 To get this working you need a Watchful.li API key that you can get through your Watchful.li profile.
 Install the API key on line 10 of sitelist.php.

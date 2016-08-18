@@ -87,6 +87,7 @@ if (!$watchful->error) :
 			$tableHtml .= '<th>site id</th>';
 			$tableHtml .= '<th>url</th>';
 			$tableHtml .= '<th>joomla</th>';
+			$tableHtml .= '<th>updates</th>';
 			$tableHtml .= '<th>ip</th>';
 			$tableHtml .= '<th>php</th>';
 			$tableHtml .= '<th>mysql</th>';
@@ -99,6 +100,7 @@ if (!$watchful->error) :
 				$tableHtml .= '<td>' . $site->siteid . '</td>';
 				$tableHtml .= '<td>' . $site->access_url . '</td>';
 				$tableHtml .= '<td>' . $site->j_version . '</td>';
+				$tableHtml .= '<td>' . $site->nbUpdates . '</td>';
 				$tableHtml .= '<td>' . $site->ip . '</td>';
 				$tableHtml .= '<td>' . $site->php_version . '</td>';
 				$tableHtml .= '<td>' . $site->mysql_version . '</td>';

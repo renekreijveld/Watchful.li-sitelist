@@ -81,6 +81,9 @@ if (!$watchful->error) :
 			exit;
 			break;
 		case "showlist":
+			$totalSites = count($sitesdata);
+			$updateSites = 0;
+			$updates = 0;
 			$tableHtml = '<table id="WFTable" class="table">';
 			$tableHtml .= '<thead>';
 			$tableHtml .= '<tr>';
@@ -106,6 +109,8 @@ if (!$watchful->error) :
 				$tableHtml .= '<td>' . $site->mysql_version . '</td>';
 				$tableHtml .= '</tr>';
 				unset($site->tags);
+				if ($site->nbUpdates > 0) $updateSites++;
+				$updates += $site->nbUpdates;
 			endforeach;
 			$tableHtml .= '</tbody>';
 			$tableHtml .= '</table>';
@@ -136,7 +141,8 @@ endif;
 
 		<style type="text/css">
 			.jumbotron {padding: 16px 0}
-			.jumbotron h1 {margin-top: 10px}
+			.jumbotron h1 {margin-top: 10px; margin-bottom: 20px;}
+			.jumbotron h3 {margin-top: 0;}
 		</style>
 	</head>
 
@@ -144,8 +150,21 @@ endif;
 		<div class="jumbotron">
 			<div class="container">
 				<h1>Watchful.li sitelist</h1>
-				<a target="_blank" href="<?php echo getUrl().'?task=doexcel';?>" class="btn btn-primary"><i class="fa fa-table"></i> Excel export</a>&nbsp;
-				<a href="<?php echo getUrl();?>" class="btn btn-primary"><i class="fa fa-refresh"></i> Refresh</a>
+				<div class="row">
+					<div class="col-md-8">
+						<h3>
+							Websites: <span class="label label-success"><?php echo $totalSites;?></span>&nbsp;
+							Sites with updates: <span class="label label-<?php echo ($updateSites == 0) ? 'success' : 'danger';?>"><?php echo $updateSites;?></span>&nbsp;
+							Updates available: <span class="label label-<?php echo ($updates == 0) ? 'success' : 'danger';?>"><?php echo $updates;?></span>
+						</h3>
+					</div>
+					<div class="col-md-4">
+						<p class="pull-right">
+							<a target="_blank" href="<?php echo getUrl().'?task=doexcel';?>" class="btn btn-primary"><i class="fa fa-table"></i> Excel export</a>&nbsp;
+							<a href="<?php echo getUrl();?>" class="btn btn-primary"><i class="fa fa-refresh"></i> Refresh</a>
+						</p>
+					</div>
+				</div>
 			</div>
 		</div>
 

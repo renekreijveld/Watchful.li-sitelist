@@ -33,11 +33,7 @@ Install the API key on line 10 of sitelist.php.
 
 Changelog:
 
-18-aug-2015: Added Foundation 5 version.
-
-18-aug-2016: Added site statistics: nr. of websites, nr. of sites with an update and nr. of updates available.
-
-18-aug-2016: Added a column to show the number of updates available and added a refresh button.
+18-aug-2015: Added a column to show the number of updates available and added a refresh button. Added site statistics: nr. of websites, nr. of sites with an update and nr. of updates available. Added Foundation 5 version. Added website up/down status.
 
 16-aug-2016: Integrated jQuery DataTables plugin to allow better display and searching.
 

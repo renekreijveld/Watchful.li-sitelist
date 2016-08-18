@@ -90,6 +90,7 @@ if (!$watchful->error) :
 			$tableHtml .= '<th>site id</th>';
 			$tableHtml .= '<th>url</th>';
 			$tableHtml .= '<th>joomla</th>';
+			$tableHtml .= '<th>up</th>';
 			$tableHtml .= '<th>updates</th>';
 			$tableHtml .= '<th>ip</th>';
 			$tableHtml .= '<th>php</th>';
@@ -99,10 +100,12 @@ if (!$watchful->error) :
 			$tableHtml .= '<tbody>';
 			// process all sites, build HTML table of site data
 			foreach ($sitesdata as $site) :
+				$siteStatus = ($site->up == 2) ? '<span style="color:#43ac6a;"><i class="fa fa-check"></i></span>' : '<span style="color:#f04124;"><i class="fa times-circle"></i></span>';
 				$tableHtml .= '<tr>';
 				$tableHtml .= '<td>' . $site->siteid . '</td>';
 				$tableHtml .= '<td>' . $site->access_url . '</td>';
 				$tableHtml .= '<td>' . $site->j_version . '</td>';
+				$tableHtml .= '<td>' . $siteStatus . '</td>';
 				$tableHtml .= '<td>' . $site->nbUpdates . '</td>';
 				$tableHtml .= '<td>' . $site->ip . '</td>';
 				$tableHtml .= '<td>' . $site->php_version . '</td>';

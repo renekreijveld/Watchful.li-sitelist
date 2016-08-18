@@ -144,7 +144,8 @@ endif;
 		<div class="jumbotron">
 			<div class="container">
 				<h1>Watchful.li sitelist</h1>
-				<a target="_blank" href="<?php echo getUrl().'?task=doexcel';?>" class="btn btn-primary"><i class="fa fa-table"></i> Excel export</a>
+				<a target="_blank" href="<?php echo getUrl().'?task=doexcel';?>" class="btn btn-primary"><i class="fa fa-table"></i> Excel export</a>&nbsp;
+				<a href="<?php echo getUrl();?>" class="btn btn-primary"><i class="fa fa-refresh"></i> Refresh</a>
 			</div>
 		</div>
 

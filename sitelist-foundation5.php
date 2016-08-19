@@ -10,6 +10,10 @@
 define('API_KEY', 'add-your-watchful.li-api-key-here');
 define('BASE_URL', 'https://watchful.li/api/v1');
 
+// Show only published websites? Then set SHOW_ONLY_PUBLISHED to true.
+// Show all sites? Then set SHOW_ONLY_PUBLISHED to false.
+define('SHOW_ONLY_PUBLISHED', true);
+
 // get base URL for refresh button
 function getUrl() {
 	$url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://'.$_SERVER["SERVER_NAME"] :  'https://'.$_SERVER["SERVER_NAME"];
@@ -22,7 +26,11 @@ function getUrl() {
 require_once dirname(__FILE__) . '/PHPExcel.php';
 
 // setup curl call, request json format
-$ch = curl_init(BASE_URL . '/sites?limit=100&order=access_url+');
+if (SHOW_ONLY_PUBLISHED) {
+	$ch = curl_init(BASE_URL . '/sites?published=1&limit=100&order=access_url+');
+} else {
+	$ch = curl_init(BASE_URL . '/sites?limit=100&order=access_url+');
+}
 $options = array(
 	CURLOPT_RETURNTRANSFER => true,
 	CURLOPT_SSL_VERIFYPEER => false,

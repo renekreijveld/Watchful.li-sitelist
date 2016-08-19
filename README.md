@@ -31,7 +31,7 @@ Install the API key on line 10 of sitelist.php.
 
 * Go to your website: http://www.your-website.com/sitelist/sitelist.php
 
-##Showing only published sites or all sites?
+##Show only published sites or all sites?
 
 On line 15 a constant (SHOW_ONLY_PUBLISHED) is setup to show either only the published sites, or all sites.
 If you want to show only the published sites, this line should look like this:

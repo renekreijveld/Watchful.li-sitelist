@@ -104,6 +104,7 @@ if (!$watchful->error) :
 			$tableHtml .= '<th>up</th>';
 			$tableHtml .= '<th>updates</th>';
 			$tableHtml .= '<th>ip</th>';
+			$tableHtml .= '<th>apache</th>';
 			$tableHtml .= '<th>php</th>';
 			$tableHtml .= '<th>mysql</th>';
 			$tableHtml .= '</tr>';
@@ -119,8 +120,9 @@ if (!$watchful->error) :
 					$tableHtml .= '<td class="url"><a data-toggle="popover" title="' . $site->name . '" data-html="true" data-placement="top" data-content="' . $siteData . '">' . $site->access_url . '</a></td>';
 					$tableHtml .= '<td class="jversion">' . $site->j_version . '</td>';
 					$tableHtml .= '<td class="sitestatus">' . $siteStatus . '</td>';
-					$tableHtml .= '<td class="updates">' . ($site->nbUpdates > 0 ? '<span class="label label-danger">' : '') . $site->nbUpdates . ($site->nbUpdates > 0 ? '</span>' : '') . '</td>';
+					$tableHtml .= '<td class="updates">' . ($site->nbUpdates > 0 ? '<span class="text-danger">yes (' . $site->nbUpdates . ')</span>' : 'no') . '</td>';
 					$tableHtml .= '<td class="ip">' . $site->ip . '</td>';
+					$tableHtml .= '<td class="apache">' . $site->server_version . '</td>';
 					$tableHtml .= '<td class="php">' . $site->php_version . '</td>';
 					$tableHtml .= '<td class="mysql">' . $site->mysql_version . '</td>';
 					$tableHtml .= '</tr>';
@@ -212,7 +214,7 @@ endif;
 		function showAll() {
 			$('#WFTable').DataTable().column(4).search('').draw();
 		}
-		$(document).ready(function(){
+ 		$(document).ready(function(){
 			var table = $('#WFTable').DataTable({
 				stateSave: true
 			});
@@ -234,6 +236,6 @@ endif;
 			});
 		});
 		$('.url a').popover();
-		</script>
+   		</script>
 	</body>
 </html>

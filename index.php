@@ -13,7 +13,7 @@ define('BASE_URL', 'https://app.watchful.li/api/v1');
 // Show only published websites? Then set SHOW_ONLY_PUBLISHED to true.
 // Show all sites? Then set SHOW_ONLY_PUBLISHED to false.
 define('SHOW_ONLY_PUBLISHED', true);
-define('SHOW_DEMO_DATA', false);
+define('SHOW_DEMO_DATA', true);
 
 
 // Demo data with fake URLs
@@ -181,7 +181,7 @@ endif;
 			.jumbotron h1 {margin-top: 10px; margin-bottom: 20px;}
 			.jumbotron h3 {margin-top: 0;}
 			h3.popover-title {min-width: 200px;}
-			.toggle-vis, .url a {cursor: pointer;}
+			.toggle-vis, .show-all, .url a {cursor: pointer;}
 		</style>
 	</head>
 
@@ -210,16 +210,24 @@ endif;
 		</div>
 
 		<div class="container">
-			<p>Show/hide columns:&nbsp;
-				<a class="toggle-vis" data-column="0">site id</a>&nbsp;|&nbsp;
-				<a class="toggle-vis" data-column="2">joomla</a>&nbsp;|&nbsp;
-				<a class="toggle-vis" data-column="3">up</a>&nbsp;|&nbsp;
-				<a class="toggle-vis" data-column="4">updates</a>&nbsp;|&nbsp;
-				<a class="toggle-vis" data-column="5">ip</a>&nbsp;|&nbsp;
-				<a class="toggle-vis" data-column="6">apache</a>&nbsp;|&nbsp;
-				<a class="toggle-vis" data-column="7">php</a>&nbsp;|&nbsp;
-				<a class="toggle-vis" data-column="8">mysql</a>
-			</p>
+			<div class="row">
+				<div class="col-md-8">
+					<p>Show/hide columns:&nbsp;
+						<a class="show-all" >show all</a>&nbsp;|&nbsp;
+						<a class="toggle-vis" data-column="0">site id</a>&nbsp;|&nbsp;
+						<a class="toggle-vis" data-column="2">joomla</a>&nbsp;|&nbsp;
+						<a class="toggle-vis" data-column="3">up</a>&nbsp;|&nbsp;
+						<a class="toggle-vis" data-column="4">updates</a>&nbsp;|&nbsp;
+						<a class="toggle-vis" data-column="5">ip</a>&nbsp;|&nbsp;
+						<a class="toggle-vis" data-column="6">apache</a>&nbsp;|&nbsp;
+						<a class="toggle-vis" data-column="7">php</a>&nbsp;|&nbsp;
+						<a class="toggle-vis" data-column="8">mysql</a>
+					</p>
+				</div>
+				<div class="col-md-4">
+					<p class="pull-right"><strong><?php echo (SHOW_DEMO_DATA ? 'Demo data' : 'Live data from Watchful.li'); ?></strong></p>
+				</div>
+			</div>
 			<?php echo $tableHtml; ?>
 			<hr>
 			<footer>
@@ -245,6 +253,11 @@ endif;
 			} );
 			table.on( 'draw', function() {
 				$('.url a').popover();
+			} );
+			$(".show-all").click(function() {
+				table.columns().flatten().each( function ( colIdx ) {
+					table.column( colIdx ).visible(true);
+				} );
 			} );
 			$('a.toggle-vis').on( 'click', function (e){
 				e.preventDefault();

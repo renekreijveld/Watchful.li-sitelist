@@ -188,6 +188,16 @@ endif;
 		</div>
 
 		<div class="container">
+			<p>Show/hide columns:&nbsp;
+				<a class="toggle-vis" data-column="0">site id</a>&nbsp;|&nbsp;
+				<a class="toggle-vis" data-column="2">joomla</a>&nbsp;|&nbsp;
+				<a class="toggle-vis" data-column="3">up</a>&nbsp;|&nbsp;
+				<a class="toggle-vis" data-column="4">updates</a>&nbsp;|&nbsp;
+				<a class="toggle-vis" data-column="5">ip</a>&nbsp;|&nbsp;
+				<a class="toggle-vis" data-column="6">apache</a>&nbsp;|&nbsp;
+				<a class="toggle-vis" data-column="7">php</a>&nbsp;|&nbsp;
+				<a class="toggle-vis" data-column="8">mysql</a>
+			</p>
 			<?php echo $tableHtml; ?>
 			<hr>
 			<footer>
@@ -196,12 +206,19 @@ endif;
 		</div>
 		<script>
 		$(document).ready(function(){
-			var table = $('#WFTable').DataTable( {
+			var table = $('#WFTable').DataTable({
 				stateSave: true
-			} );
-			table.on( 'draw', function () {
+			});
+			table.on( 'draw', function(){
 				$('.url a').popover();
 			} );
+			$('a.toggle-vis').on( 'click', function (e){
+				e.preventDefault();
+				// Get the column API object
+				var column = table.column($(this).attr('data-column'));
+				// Toggle the visibility
+				column.visible(!column.visible());
+			});
 		});
 		$('.url a').popover();
 		</script>

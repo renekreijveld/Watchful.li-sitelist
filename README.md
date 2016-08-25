@@ -37,6 +37,7 @@ define('SHOW_ONLY_PUBLISHED', false);
 ##Changelog:
 
 25-aug-2016:
+* Added column toggler to show or hide columns.
 * Added savestate to DataTables.
 * Dropped Foundation version.
 * Added a popup to the website URL showing frontend and administrator links.

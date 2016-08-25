@@ -15,7 +15,7 @@ Install the API key on line 10 of sitelist.php.
 
 * Delete file sitelist-foundation5.php.
 
-* Add your Watchful.li API key in the sitelist.php file.
+* Add your Watchful.li API key in the sitelist.php file (line 10).
 
 * Go to your website: http://www.your-website.com/sitelist/sitelist.php
 
@@ -27,7 +27,7 @@ Install the API key on line 10 of sitelist.php.
 
 * Delete file sitelist-bootstrap3.php.
 
-* Add your Watchful.li API key in the sitelist.php file.
+* Add your Watchful.li API key in the sitelist.php file (line 10).
 
 * Go to your website: http://www.your-website.com/sitelist/sitelist.php
 

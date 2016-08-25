@@ -224,7 +224,7 @@ endif;
 					</p>
 				</div>
 				<div class="col-md-4">
-					<p class="pull-right"><strong><?php echo (SHOW_DEMO_DATA ? 'Demo data' : 'Live data from Watchful.li'); ?></strong></p>
+					<p class="pull-right">Showing <strong><?php echo (SHOW_DEMO_DATA ? 'demo data' : 'live data from Watchful.li'); ?></strong></p>
 				</div>
 			</div>
 			<?php echo $tableHtml; ?>

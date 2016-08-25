@@ -37,6 +37,7 @@ define('SHOW_ONLY_PUBLISHED', false);
 ##Changelog:
 
 25-aug-2016:
+* Added much faster toggle between display of sites with updates and all sites
 * Added column toggler to show or hide columns.
 * Added savestate to DataTables.
 * Dropped Foundation version.

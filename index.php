@@ -169,17 +169,18 @@ endif;
 			<div class="container">
 				<h1>Watchful.li sitelist</h1>
 				<div class="row">
-					<div class="col-md-8">
+					<div class="col-md-7">
 						<h3>
 							Websites: <span class="label label-success"><?php echo $totalSites;?></span>&nbsp;
 							Sites with updates: <span class="label label-<?php echo ($updateSites == 0) ? 'success' : 'danger';?>"><?php echo $updateSites;?></span>&nbsp;
-							Updates available: <span class="label label-<?php echo ($nrUpdates == 0) ? 'success' : 'danger';?>"><?php echo $nrUpdates;?></span>
+							Updates: <span class="label label-<?php echo ($nrUpdates == 0) ? 'success' : 'danger';?>"><?php echo $nrUpdates;?></span>
 						</h3>
 					</div>
-					<div class="col-md-4">
+					<div class="col-md-5">
 						<p class="pull-right">
-							<a href="<?php echo getUrl().'?task=showupdates';?>" class="btn btn-danger"><i class="fa fa-bolt"></i> Updates</a>&nbsp;
-							<a href="<?php echo getUrl();?>" class="btn btn-primary"><i class="fa fa-list"></i> All sites</a>&nbsp;
+							<a href="#" class="btn btn-danger showupdates"><i class="fa fa-bolt"></i> Updates</a>&nbsp;
+							<a href="#" class="btn btn-primary showall"><i class="fa fa-list"></i> All sites</a>&nbsp;
+							<a href="<?php echo getUrl(); ?>" class="btn btn-primary"><i class="fa fa-refresh"></i> Refresh</a>&nbsp;
 							<a target="_blank" href="<?php echo getUrl().'?task=doexcel';?>" class="btn btn-success"><i class="fa fa-table"></i> Excel export</a>
 						</p>
 					</div>
@@ -205,9 +206,21 @@ endif;
 			</footer>
 		</div>
 		<script>
+		function showUpdates() {
+			$('#WFTable').DataTable().column(4).search('yes').draw();
+		}
+		function showAll() {
+			$('#WFTable').DataTable().column(4).search('').draw();
+		}
 		$(document).ready(function(){
 			var table = $('#WFTable').DataTable({
 				stateSave: true
+			});
+			$(".showupdates").click(function() {
+				showUpdates();
+			});
+			$(".showall").click(function() {
+				showAll();
 			});
 			table.on( 'draw', function(){
 				$('.url a').popover();

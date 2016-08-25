@@ -52,6 +52,7 @@ define('SHOW_DEMO_DATA', false);
 ##Changelog:
 
 25-aug-2016:
+* Added option to show all columns
 * Added option to show demo data or live data
 * Added much faster toggle between display of sites with updates and all sites
 * Added column toggler to show or hide columns.

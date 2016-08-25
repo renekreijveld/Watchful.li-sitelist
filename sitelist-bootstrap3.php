@@ -6,19 +6,17 @@
 * @copyright (c) 2016, Rene Kreijveld
 */
 
-//Config
+// Config
 define('API_KEY', 'add-your-watchful.li-api-key-here');
-define('BASE_URL', 'https://watchful.li/api/v1');
+define('BASE_URL', 'https://app.watchful.li/api/v1');
 
 // Show only published websites? Then set SHOW_ONLY_PUBLISHED to true.
 // Show all sites? Then set SHOW_ONLY_PUBLISHED to false.
 define('SHOW_ONLY_PUBLISHED', true);
 
-// get base URL for refresh button
+// Get base URL
 function getUrl() {
-	$url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://'.$_SERVER["SERVER_NAME"] :  'https://'.$_SERVER["SERVER_NAME"];
-	$url .= ( $_SERVER["SERVER_PORT"] !== 80 ) ? ":".$_SERVER["SERVER_PORT"] : "";
-	$url .= $_SERVER["REQUEST_URI"];
+	$url = strtok($_SERVER["REQUEST_URI"],'?');
 	return $url;
 }
 
@@ -48,6 +46,11 @@ if (!$watchful->error) :
 	$sitesdata = $watchful->msg->data;
 
 	$task = $_GET["task"];
+	$updates = false;
+	if ($task == "showupdates") {
+		$updates = true;
+		$task = "showlist";
+	}
 	if (is_null($task)) $task = "showlist";
 	switch ($task) {
 		case "doexcel":
@@ -91,7 +94,7 @@ if (!$watchful->error) :
 		case "showlist":
 			$totalSites = count($sitesdata);
 			$updateSites = 0;
-			$updates = 0;
+			$nrUpdates = 0;
 			$tableHtml = '<table id="WFTable" class="table">';
 			$tableHtml .= '<thead>';
 			$tableHtml .= '<tr>';
@@ -108,20 +111,22 @@ if (!$watchful->error) :
 			$tableHtml .= '<tbody>';
 			// process all sites, build HTML table of site data
 			foreach ($sitesdata as $site) :
-				$siteStatus = ($site->up == 2) ? '<span class="text-success"><i class="fa fa-check"></i></span>' : '<span class="text-danger"><i class="fa times-circle"></i></span>';
-				$tableHtml .= '<tr>';
-				$tableHtml .= '<td>' . $site->siteid . '</td>';
-				$tableHtml .= '<td>' . $site->access_url . '</td>';
-				$tableHtml .= '<td>' . $site->j_version . '</td>';
-				$tableHtml .= '<td>' . $siteStatus . '</td>';
-				$tableHtml .= '<td>' . $site->nbUpdates . '</td>';
-				$tableHtml .= '<td>' . $site->ip . '</td>';
-				$tableHtml .= '<td>' . $site->php_version . '</td>';
-				$tableHtml .= '<td>' . $site->mysql_version . '</td>';
-				$tableHtml .= '</tr>';
-				unset($site->tags);
-				if ($site->nbUpdates > 0) $updateSites++;
-				$updates += $site->nbUpdates;
+				if (!$updates || ($updates && $site->nbUpdates > 0)) {
+					$siteStatus = ($site->up == 2) ? '<span class="text-success"><i class="fa fa-check"></i></span>' : '<span class="text-danger"><i class="fa times-circle"></i></span>';
+					$tableHtml .= '<tr>';
+					$tableHtml .= '<td>' . $site->siteid . '</td>';
+					$tableHtml .= '<td>' . $site->access_url . '</td>';
+					$tableHtml .= '<td>' . $site->j_version . '</td>';
+					$tableHtml .= '<td>' . $siteStatus . '</td>';
+					$tableHtml .= '<td>' . $site->nbUpdates . '</td>';
+					$tableHtml .= '<td>' . $site->ip . '</td>';
+					$tableHtml .= '<td>' . $site->php_version . '</td>';
+					$tableHtml .= '<td>' . $site->mysql_version . '</td>';
+					$tableHtml .= '</tr>';
+					unset($site->tags);
+					if ($site->nbUpdates > 0) $updateSites++;
+					$nrUpdates += $site->nbUpdates;
+				}
 			endforeach;
 			$tableHtml .= '</tbody>';
 			$tableHtml .= '</table>';
@@ -166,13 +171,14 @@ endif;
 						<h3>
 							Websites: <span class="label label-success"><?php echo $totalSites;?></span>&nbsp;
 							Sites with updates: <span class="label label-<?php echo ($updateSites == 0) ? 'success' : 'danger';?>"><?php echo $updateSites;?></span>&nbsp;
-							Updates available: <span class="label label-<?php echo ($updates == 0) ? 'success' : 'danger';?>"><?php echo $updates;?></span>
+							Updates available: <span class="label label-<?php echo ($nrUpdates == 0) ? 'success' : 'danger';?>"><?php echo $nrUpdates;?></span>
 						</h3>
 					</div>
 					<div class="col-md-4">
 						<p class="pull-right">
-							<a target="_blank" href="<?php echo getUrl().'?task=doexcel';?>" class="btn btn-primary"><i class="fa fa-table"></i> Excel export</a>&nbsp;
-							<a href="<?php echo getUrl();?>" class="btn btn-primary"><i class="fa fa-refresh"></i> Refresh</a>
+							<a href="<?php echo getUrl().'?task=showupdates';?>" class="btn btn-danger"><i class="fa fa-bolt"></i> Updates</a>&nbsp;
+							<a href="<?php echo getUrl();?>" class="btn btn-primary"><i class="fa fa-list"></i> All sites</a>&nbsp;
+							<a target="_blank" href="<?php echo getUrl().'?task=doexcel';?>" class="btn btn-success"><i class="fa fa-table"></i> Excel export</a>
 						</p>
 					</div>
 				</div>

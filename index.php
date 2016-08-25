@@ -196,7 +196,9 @@ endif;
 		</div>
 		<script>
 		$(document).ready(function(){
-			var table = $('#WFTable').DataTable();
+			var table = $('#WFTable').DataTable( {
+				stateSave: true
+			} );
 			table.on( 'draw', function () {
 				$('.url a').popover();
 			} );

@@ -36,11 +36,10 @@ define('SHOW_ONLY_PUBLISHED', false);
 
 ##Changelog:
 
-25-aug-2016 (2):
+25-aug-2016:
+* Added savestate to DataTables.
 * Dropped Foundation version.
 * Added a popup to the website URL showing frontend and administrator links.
-
-25-aug-2016 (1):
 * Added option to show only sites with updates.
 * Changed refresh button to All sites.
 * Added button to show only sites with updates.

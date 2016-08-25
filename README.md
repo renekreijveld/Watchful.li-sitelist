@@ -48,6 +48,11 @@ define('SHOW_ONLY_PUBLISHED', false);
 
 ##Changelog:
 
+25-aug-2016:
+* Added option to show only sites with updates.
+* Changed refresh button to All sites.
+* Updated Watchful.li API url.
+
 19-aug-2016:
 * Added option to show only the published sites, or all sites.
 

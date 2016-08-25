@@ -7,29 +7,17 @@ For easy browsing and searching in the site list the jQuery DataTables plugin wa
 To get this working you need a Watchful.li API key that you can get through your Watchful.li profile.
 Install the API key on line 10 of sitelist.php.
 
-##Installation instructions (Bootstrap 3 version):
+##Installation instructions:
 
-* Upload all files to a folder "sitelist" on your webserver. This can be on a local development environment too, as long as it is connect to the Internet.
+* Create a new folder "sitelist" in the root of your website on your webserver.  This can be on a local development environment too, as long as it has Internet access.
 
-* Rename sitelist-bootstrap3.php to sitelist.php.
+* Upload all files to the newly created folder "sitelist" on your webserver.
 
-* Delete file sitelist-foundation5.php.
+* Add your Watchful.li API key in the index.php file (line 10).
 
-* Add your Watchful.li API key in the sitelist.php file (line 10).
+* Go to your website: http://www.your-website.com/sitelist/
 
-* Go to your website: http://www.your-website.com/sitelist/sitelist.php
-
-##Installation instructions (Foundation 5 version):
-
-* Upload all files to a folder "sitelist" on your webserver. This can be on a local development environment too, as long as it is connect to the Internet.
-
-* Rename sitelist-foundation5.php to sitelist.php.
-
-* Delete file sitelist-bootstrap3.php.
-
-* Add your Watchful.li API key in the sitelist.php file (line 10).
-
-* Go to your website: http://www.your-website.com/sitelist/sitelist.php
+* Optionally protect access to the sitelist folder through password protection with .htaccess. See also: https://davidwalsh.name/password-protect-directory-using-htaccess
 
 ##Show only published sites or all sites?
 
@@ -48,7 +36,11 @@ define('SHOW_ONLY_PUBLISHED', false);
 
 ##Changelog:
 
-25-aug-2016:
+25-aug-2016 (2):
+* Dropped Foundation version.
+* Added a popup to the website URL showing frontend and administrator links.
+
+25-aug-2016 (1):
 * Added option to show only sites with updates.
 * Changed refresh button to All sites.
 * Added button to show only sites with updates.

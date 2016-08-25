@@ -1,6 +1,6 @@
 <?php
 /**
-* @package Watchful.li siteoverview with Excel export, Foundation 5 version
+* @package Watchful.li siteoverview with Excel export
 * @author Rene Kreijveld
 * @authorUrl https://about.me/renekreijveld
 * @copyright (c) 2016, Rene Kreijveld
@@ -23,7 +23,7 @@ function getUrl() {
 /** Include PHPExcel */
 require_once dirname(__FILE__) . '/PHPExcel.php';
 
-// setup curl call, request json format
+// Setup curl call, request json format
 if (SHOW_ONLY_PUBLISHED) {
 	$ch = curl_init(BASE_URL . '/sites?published=1&limit=100&order=access_url+');
 } else {
@@ -95,7 +95,7 @@ if (!$watchful->error) :
 			$totalSites = count($sitesdata);
 			$updateSites = 0;
 			$nrUpdates = 0;
-			$tableHtml = '<table id="WFTable">';
+			$tableHtml = '<table id="WFTable" class="table">';
 			$tableHtml .= '<thead>';
 			$tableHtml .= '<tr>';
 			$tableHtml .= '<th>site id</th>';
@@ -112,16 +112,17 @@ if (!$watchful->error) :
 			// process all sites, build HTML table of site data
 			foreach ($sitesdata as $site) :
 				if (!$updates || ($updates && $site->nbUpdates > 0)) {
-					$siteStatus = ($site->up == 2) ? '<span style="color:#43ac6a;"><i class="fa fa-check"></i></span>' : '<span style="color:#f04124;"><i class="fa times-circle"></i></span>';
+					$siteData = "<a target='_blank' href='" . $site->access_url . "'>Frontend</a><br/><a target='_blank' href='" . $site->admin_url . "'>Administrator</a>";
+					$siteStatus = ($site->up == 2) ? '<span class="text-success"><i class="fa fa-check"></i></span>' : '<span class="text-danger"><i class="fa times-circle"></i></span>';
 					$tableHtml .= '<tr>';
-					$tableHtml .= '<td>' . $site->siteid . '</td>';
-					$tableHtml .= '<td>' . $site->access_url . '</td>';
-					$tableHtml .= '<td>' . $site->j_version . '</td>';
-					$tableHtml .= '<td>' . $siteStatus . '</td>';
-					$tableHtml .= '<td>' . $site->nbUpdates . '</td>';
-					$tableHtml .= '<td>' . $site->ip . '</td>';
-					$tableHtml .= '<td>' . $site->php_version . '</td>';
-					$tableHtml .= '<td>' . $site->mysql_version . '</td>';
+					$tableHtml .= '<td class="siteid">' . $site->siteid . '</td>';
+					$tableHtml .= '<td class="url"><a data-toggle="popover" title="' . $site->name . '" data-html="true" data-placement="top" data-content="' . $siteData . '">' . $site->access_url . '</a></td>';
+					$tableHtml .= '<td class="jversion">' . $site->j_version . '</td>';
+					$tableHtml .= '<td class="sitestatus">' . $siteStatus . '</td>';
+					$tableHtml .= '<td class="updates">' . ($site->nbUpdates > 0 ? '<span class="label label-danger">' : '') . $site->nbUpdates . ($site->nbUpdates > 0 ? '</span>' : '') . '</td>';
+					$tableHtml .= '<td class="ip">' . $site->ip . '</td>';
+					$tableHtml .= '<td class="php">' . $site->php_version . '</td>';
+					$tableHtml .= '<td class="mysql">' . $site->mysql_version . '</td>';
 					$tableHtml .= '</tr>';
 					unset($site->tags);
 					if ($site->nbUpdates > 0) $updateSites++;
@@ -138,65 +139,69 @@ endif;
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<meta http-equiv="x-ua-compatible" content="ie=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta name="description" content="Watchful.li sitelist local tool">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
 		<meta name="author" content="René Kreijveld">
 
 		<title>Watchful.li sitelist</title>
 
-		<!-- Foundation ZURB & DataTables -->
-		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/zf-5.5.2/jq-2.2.3/dt-1.10.12/datatables.min.css"/>
+		<!-- Bootstrap core CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<!-- Datatables  CSS -->
+		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs-3.3.6/jq-2.2.3/dt-1.10.12/datatables.min.css"/>
 		<!-- Font Awesome -->
 		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
-		<!-- Foundation Zurb, jQuery and DataTables Javascript-->
-		<script type="text/javascript" src="https://cdn.datatables.net/v/zf-5.5.2/jq-2.2.3/dt-1.10.12/datatables.min.js"></script>
-		<style>
-			.row {max-width: 86rem;}
-		</style>
+		<!-- Datatables -->
+		<script type="text/javascript" src="https://cdn.datatables.net/v/bs-3.3.6/jq-2.2.3/dt-1.10.12/datatables.min.js"></script>
 
+		<style type="text/css">
+			.jumbotron {padding: 16px 0}
+			.jumbotron h1 {margin-top: 10px; margin-bottom: 20px;}
+			.jumbotron h3 {margin-top: 0;}
+			h3.popover-title {min-width: 200px;}
+		</style>
 	</head>
 
 	<body>
-		<div class="panel">
-			<div class="row">
-				<div class="small-12 columns">
-					<h1>Watchful.li sitelist</h1>
+		<div class="jumbotron">
+			<div class="container">
+				<h1>Watchful.li sitelist</h1>
+				<div class="row">
+					<div class="col-md-8">
+						<h3>
+							Websites: <span class="label label-success"><?php echo $totalSites;?></span>&nbsp;
+							Sites with updates: <span class="label label-<?php echo ($updateSites == 0) ? 'success' : 'danger';?>"><?php echo $updateSites;?></span>&nbsp;
+							Updates available: <span class="label label-<?php echo ($nrUpdates == 0) ? 'success' : 'danger';?>"><?php echo $nrUpdates;?></span>
+						</h3>
+					</div>
+					<div class="col-md-4">
+						<p class="pull-right">
+							<a href="<?php echo getUrl().'?task=showupdates';?>" class="btn btn-danger"><i class="fa fa-bolt"></i> Updates</a>&nbsp;
+							<a href="<?php echo getUrl();?>" class="btn btn-primary"><i class="fa fa-list"></i> All sites</a>&nbsp;
+							<a target="_blank" href="<?php echo getUrl().'?task=doexcel';?>" class="btn btn-success"><i class="fa fa-table"></i> Excel export</a>
+						</p>
+					</div>
 				</div>
-			</div>
-			<div class="row">
-				<div class="small-8 columns">
-					<p>
-						Websites: <span class="success round label"><?php echo $totalSites;?></span>&nbsp;
-						Sites with updates: <span class="<?php echo ($updateSites == 0) ? 'success' : 'alert';?> round label"><?php echo $updateSites;?></span>&nbsp;
-						Updates available: <span class="<?php echo ($nrUpdates == 0) ? 'success' : 'alert';?> round label"><?php echo $nrUpdates;?></span>
-					</p>
-				</div>
-				<div class="small-4 columns">
-					<p class="text-right">
-						<a href="<?php echo getUrl().'?task=showupdates';?>" class="alert button small"><i class="fa fa-bolt"></i> Updates</a>&nbsp;
-						<a href="<?php echo getUrl();?>" class="button small"><i class="fa fa-list"></i> All sites</a>&nbsp;
-						<a target="_blank" href="<?php echo getUrl().'?task=doexcel';?>" class="success button small"><i class="fa fa-table"></i> Excel export</a>
-					</p>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="small-12 columns">
-				<?php echo $tableHtml; ?>
-				<hr>
-				<footer>
-					<p style="font-size: 12px;">Data collected <i class="fa fa-calendar"></i> <?php echo date("Y-m-d"); ?> <i class="fa fa-clock-o"></i> <?php echo date("H:i:s"); ?>, written by <a href="https://about.me/renekreijveld" target="_blank">René Kreijveld</a>. <i class="fa fa-github"></i> <a href="https://github.com/renekreijveld/Watchful.li-sitelist" target="_blank">View on Github</a> All data collected through <a href="https://watchful.li/support-services/kb/article/watchful-rest-api" target="_blank">Watchful REST API</a>. Display with <a href="https://www.datatables.net" target="_blank">jQuery DataTables plugin</a>.</p>
-				</footer>
 			</div>
 		</div>
 
+		<div class="container">
+			<?php echo $tableHtml; ?>
+			<hr>
+			<footer>
+				<p style="font-size: 12px;">Data collected <i class="fa fa-calendar"></i> <?php echo date("Y-m-d"); ?> <i class="fa fa-clock-o"></i> <?php echo date("H:i:s"); ?>, written by <a href="https://about.me/renekreijveld" target="_blank">René Kreijveld</a>. <i class="fa fa-github"></i> <a href="https://github.com/renekreijveld/Watchful.li-sitelist" target="_blank">View on Github</a> All data collected through <a href="https://watchful.li/support-services/kb/article/watchful-rest-api" target="_blank">Watchful REST API</a>. Display with <a href="https://www.datatables.net" target="_blank">jQuery DataTables plugin</a>.</p>
+			</footer>
+		</div>
 		<script>
-		$(document).foundation();
 		$(document).ready(function(){
-			$('#WFTable').DataTable();
+			var table = $('#WFTable').DataTable();
+			table.on( 'draw', function () {
+				$('.url a').popover();
+			} );
 		});
+		$('.url a').popover();
 		</script>
 	</body>
 </html>

@@ -34,9 +34,25 @@ If you want to show all sites, this line should look like this:
 define('SHOW_ONLY_PUBLISHED', false);
 ```
 
+##Show demo data or live data?
+
+On line 16 a constant (SHOW_DEMO_DATA) is setup to show either demo data or real live data.
+If you want to show demo data, this line should look like this:
+
+```php
+define('SHOW_DEMO_DATA', true);
+```
+
+If you want to show live data collected from the Watchful.li API, this line should look like this:
+
+```php
+define('SHOW_DEMO_DATA', false);
+```
+
 ##Changelog:
 
 25-aug-2016:
+* Added option to show demo data or live data
 * Added much faster toggle between display of sites with updates and all sites
 * Added column toggler to show or hide columns.
 * Added savestate to DataTables.

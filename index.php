@@ -13,8 +13,7 @@ define('BASE_URL', 'https://app.watchful.li/api/v1');
 // Show only published websites? Then set SHOW_ONLY_PUBLISHED to true.
 // Show all sites? Then set SHOW_ONLY_PUBLISHED to false.
 define('SHOW_ONLY_PUBLISHED', true);
-define('SHOW_DEMO_DATA', true);
-
+define('SHOW_DEMO_DATA', false);
 
 // Demo data with fake URLs
 $demoData = array(

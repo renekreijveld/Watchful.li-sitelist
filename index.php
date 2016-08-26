@@ -218,7 +218,7 @@ endif;
 						<a class="toggle-vis" data-column="3">up</a>&nbsp;|&nbsp;
 						<a class="toggle-vis" data-column="4">updates</a>&nbsp;|&nbsp;
 						<a class="toggle-vis" data-column="5">ip</a>&nbsp;|&nbsp;
-						<a class="toggle-vis" data-column="6">apache</a>&nbsp;|&nbsp;
+						<a class="toggle-vis" data-column="6">webserver</a>&nbsp;|&nbsp;
 						<a class="toggle-vis" data-column="7">php</a>&nbsp;|&nbsp;
 						<a class="toggle-vis" data-column="8">mysql</a>
 					</p>

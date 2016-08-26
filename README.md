@@ -9,8 +9,13 @@ Install the API key on line 10 of sitelist.php.
 
 ##Screenshots:
 
-**Easy sorting by click on any column header**
+**Easy sorting by click on any column header:**
+
 ![Easy sorting](https://github.com/renekreijveld/Watchful.li-sitelist/raw/master/screenshots/sorting.gif "Easy sorting")
+
+**Hide columns you don't need. Or show them all again:**
+
+![Hide and show columns](https://github.com/renekreijveld/Watchful.li-sitelist/raw/master/screenshots/columns.gif "Hide and show columns")
 
 ##Installation instructions:
 

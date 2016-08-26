@@ -7,6 +7,11 @@ For easy browsing and searching in the site list the jQuery DataTables plugin wa
 To get this working you need a Watchful.li API key that you can get through your Watchful.li profile.
 Install the API key on line 10 of sitelist.php.
 
+##Screenshots:
+
+**Easy sorting by click on any column header**
+![Easy sorting](https://github.com/renekreijveld/Watchful.li-sitelist/raw/master/screenshots/sorting.gif "Easy sorting")
+
 ##Installation instructions:
 
 * Create a new folder "sitelist" in the root of your website on your webserver.  This can be on a local development environment too, as long as it has Internet access.

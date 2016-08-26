@@ -165,14 +165,11 @@ endif;
 
 		<title>Watchful.li sitelist</title>
 
-		<!-- Bootstrap core CSS -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-		<!-- Datatables  CSS -->
+		<!-- Bootstrap, jQuery and Datatables CSS -->
 		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs-3.3.6/jq-2.2.3/dt-1.10.12/datatables.min.css"/>
-		<!-- Font Awesome -->
+		<!-- Font Awesome CSS -->
 		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
-
-		<!-- Datatables -->
+		<!-- Bootstrap, jQuery and Datatables Javascript -->
 		<script type="text/javascript" src="https://cdn.datatables.net/v/bs-3.3.6/jq-2.2.3/dt-1.10.12/datatables.min.js"></script>
 
 		<style type="text/css">

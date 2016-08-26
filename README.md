@@ -5,14 +5,14 @@ With this script you can display an overview of all your Watchful.li sites and e
 
 ##Options:
 
-* Show all sites or just the sites that have updates
-* Sort your sitesdata on any column
-* Hide columns you don't need, or show them all again
-* Super fast ajax-based searching on any data in any column
-* Export your sitesdata to Microsoft Excel
-* Configurable option to show all sites or just the published sites
-* Configurable option to show live data captured through the Watchful.li API or show demo data
-* Sitelist remembers your settings (sort order, columns shown, number of rows and search and filter settings)
+* Show all sites or just the sites that have updates.
+* Sort your sitesdata on any column.
+* Hide columns you don't need, or show them all again.
+* Super fast ajax-based searching on any data in any column.
+* Export your sitesdata to Microsoft Excel.
+* Configurable option to show all sites or just the published sites.
+* Configurable option to show live data captured through the Watchful.li API or show demo data.
+* Sitelist remembers your settings (sort order, columns shown, number of rows and search and filter settings).
 
 To get Watchful.li sitelist this working you need a Watchful.li API key that you can get through your Watchful.li profile.
 Install the API key on line 10 of sitelist.php. See installation instructions below.

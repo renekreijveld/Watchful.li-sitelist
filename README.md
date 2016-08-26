@@ -21,6 +21,10 @@ Install the API key on line 10 of sitelist.php.
 
 ![Hide and show columns](https://github.com/renekreijveld/Watchful.li-sitelist/raw/master/screenshots/hide-and-show-columns.gif "Hide and show columns")
 
+**Super fast searching on any data in any column:**
+
+![Super fast searching](https://github.com/renekreijveld/Watchful.li-sitelist/raw/master/screenshots/hide-and-show-columns.gif "super-fast-searching.gif")
+
 ##Installation instructions:
 
 * Create a new folder "sitelist" in the root of your website on your webserver.  This can be on a local development environment too, as long as it has Internet access.

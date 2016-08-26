@@ -2,7 +2,17 @@ Watchful.li sitelist
 ====================
 
 With this script you can display an overview of all your Watchful.li sites and export the data to Excel.
-For easy browsing and searching in the site list the jQuery DataTables plugin was added.
+
+##Options:
+
+* Show all sites or just the sites that have updates
+* Sort your sites data on any column
+* Hide columns you don't need, or show them all again
+* Super gast ajax-based searching on any data in any column
+* Export your sites data to Microsodt Excel
+* Configurable option to show all sites or just the published sites
+* Configurable option to show live data captured through the Watchful.li API or show demo data
+* Sitelist remembers your settings (sort order, columns shown, number of rows and search and filter settings)
 
 To get this working you need a Watchful.li API key that you can get through your Watchful.li profile.
 Install the API key on line 10 of sitelist.php.
@@ -21,7 +31,7 @@ Install the API key on line 10 of sitelist.php.
 
 ![Hide and show columns](https://github.com/renekreijveld/Watchful.li-sitelist/raw/master/screenshots/hide-and-show-columns.gif "Hide and show columns")
 
-**Super fast searching on any data in any column:**
+**Super fast ajax-based searching on any data in any column:**
 
 ![Super fast searching](https://github.com/renekreijveld/Watchful.li-sitelist/raw/master/screenshots/super-fast-searching.gif "super-fast-searching.gif")
 

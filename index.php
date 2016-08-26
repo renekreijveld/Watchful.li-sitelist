@@ -180,7 +180,7 @@ endif;
 			.jumbotron h1 {margin-top: 10px; margin-bottom: 20px;}
 			.jumbotron h3 {margin-top: 0;}
 			h3.popover-title {min-width: 200px;}
-			.toggle-vis, .show-all, .url a {cursor: pointer;}
+			.toggle-vis, .show-all-columns, .url a {cursor: pointer;}
 		</style>
 	</head>
 
@@ -199,7 +199,7 @@ endif;
 					<div class="col-md-5">
 						<p class="pull-right">
 							<a href="#" class="btn btn-danger showupdates"><i class="fa fa-bolt"></i> Updates</a>&nbsp;
-							<a href="#" class="btn btn-primary showall"><i class="fa fa-list"></i> All sites</a>&nbsp;
+							<a href="#" class="btn btn-primary showallsites"><i class="fa fa-list"></i> All sites</a>&nbsp;
 							<a href="<?php echo getUrl(); ?>" class="btn btn-primary"><i class="fa fa-refresh"></i> Refresh</a>&nbsp;
 							<a target="_blank" href="<?php echo getUrl().'?task=doexcel';?>" class="btn btn-success"><i class="fa fa-table"></i> Excel export</a>
 						</p>
@@ -212,7 +212,7 @@ endif;
 			<div class="row">
 				<div class="col-md-8">
 					<p>Show/hide columns:&nbsp;
-						<a class="show-all" >show all</a>&nbsp;|&nbsp;
+						<a class="show-all-columns" >show all</a>&nbsp;|&nbsp;
 						<a class="toggle-vis" data-column="0">site id</a>&nbsp;|&nbsp;
 						<a class="toggle-vis" data-column="2">joomla</a>&nbsp;|&nbsp;
 						<a class="toggle-vis" data-column="3">up</a>&nbsp;|&nbsp;
@@ -242,21 +242,20 @@ endif;
 		}
  		$(document).ready(function() {
 			var table = $('#WFTable').DataTable( {
-				stateSave: true
+				stateSave: true,
+				autoWidth: false
 			} );
 			$(".showupdates").click(function() {
 				showUpdates();
 			} );
-			$(".showall").click(function() {
+			$(".showallsites").click(function() {
 				showAll();
 			} );
 			table.on( 'draw', function() {
 				$('.url a').popover();
 			} );
-			$(".show-all").click(function() {
-				table.columns().flatten().each( function ( colIdx ) {
-					table.column( colIdx ).visible(true);
-				} );
+			$(".show-all-columns").click(function() {
+				table.columns().visible( true );
 			} );
 			$('a.toggle-vis').on( 'click', function (e){
 				e.preventDefault();

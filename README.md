@@ -23,7 +23,7 @@ Install the API key on line 10 of sitelist.php.
 
 **Super fast searching on any data in any column:**
 
-![Super fast searching](https://github.com/renekreijveld/Watchful.li-sitelist/raw/master/screenshots/hide-and-show-columns.gif "super-fast-searching.gif")
+![Super fast searching](https://github.com/renekreijveld/Watchful.li-sitelist/raw/master/screenshots/super-fast-searching.gif "super-fast-searching.gif")
 
 ##Installation instructions:
 

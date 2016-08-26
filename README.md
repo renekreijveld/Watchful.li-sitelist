@@ -15,7 +15,7 @@ With this script you can display an overview of all your Watchful.li sites and e
 * Sitelist remembers your settings (sort order, columns shown, number of rows and search and filter settings)
 
 To get Watchful.li sitelist this working you need a Watchful.li API key that you can get through your Watchful.li profile.
-Install the API key on line 10 of sitelist.php. See installation instructions below.
+Install the API key on line 10 of sitelist.php. See [installation instructions](#installation)installation instructions.
 
 ##Screenshots:
 
@@ -35,7 +35,7 @@ Install the API key on line 10 of sitelist.php. See installation instructions be
 
 ![Super fast searching](https://github.com/renekreijveld/Watchful.li-sitelist/raw/master/screenshots/super-fast-searching.gif "super-fast-searching.gif")
 
-##Installation instructions:
+<a name="installation"></a>##Installation instructions:
 
 * Create a new folder "sitelist" in the root of your website on your webserver.  This can be on a local development environment too, as long as it has Internet access.
 
@@ -78,6 +78,10 @@ define('SHOW_DEMO_DATA', false);
 ```
 
 ##Changelog:
+
+26-aug-2016:
+* Added screenshots for most important options
+* Major update README
 
 25-aug-2016:
 * Added option to show all columns

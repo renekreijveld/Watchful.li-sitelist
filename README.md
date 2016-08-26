@@ -35,7 +35,8 @@ Install the API key on line 10 of sitelist.php. See [installation instructions](
 
 ![Super fast searching](https://github.com/renekreijveld/Watchful.li-sitelist/raw/master/screenshots/super-fast-searching.gif "super-fast-searching.gif")
 
-##Installation instructions:<a name="installation"></a>
+<a name="installation"></a>
+##Installation instructions:
 
 * Create a new folder "sitelist" in the root of your website on your webserver.  This can be on a local development environment too, as long as it has Internet access.
 

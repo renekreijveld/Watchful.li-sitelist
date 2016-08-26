@@ -9,6 +9,10 @@ Install the API key on line 10 of sitelist.php.
 
 ##Screenshots:
 
+**Show just the sites with updates or shall all sites:**
+
+![Sites with updates](https://github.com/renekreijveld/Watchful.li-sitelist/raw/master/screenshots/show-updates.gif "Sites with updates")
+
 **Easy sorting by click on any column header:**
 
 ![Easy sorting](https://github.com/renekreijveld/Watchful.li-sitelist/raw/master/screenshots/sort-columns.gif "Easy sorting")

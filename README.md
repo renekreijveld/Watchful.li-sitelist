@@ -19,7 +19,7 @@ Install the API key on line 10 of sitelist.php. See installation instructions be
 
 ##Screenshots:
 
-**Show just the sites with updates or shall all sites:**
+**Show just the sites with updates or show all sites:**
 
 ![Sites with updates](https://github.com/renekreijveld/Watchful.li-sitelist/raw/master/screenshots/show-updates.gif "Sites with updates")
 

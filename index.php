@@ -38,6 +38,10 @@ function getUrl()
 /** Include PHPExcel */
 require_once dirname(__FILE__) . '/PHPExcel.php';
 
+// Defauts
+$sitesdata     = null;
+$watchfulerror = null;
+
 // Demo data as sitedata
 if (SHOW_DEMO_DATA)
 {
@@ -108,25 +112,33 @@ if ($sitesdata)
 				->setTitle("Watchful.li sitelist")
 				->setSubject("Watchful.li sitelist");
 			$objPHPExcel->setActiveSheetIndex(0);
+
 			$rowArray = [];
 			foreach ((array) $start as $var => $value)
 			{
 				$rowArray[] = $var;
 			}
+
 			$objPHPExcel->getActiveSheet()->fromArray($rowArray, null, 'A1');
 			$objPHPExcel->getActiveSheet()->getStyle('A1:DD1')->getFont()->setBold(true);
+
 			$start = 2;
-			foreach ($sitesdata as $i) :
+			foreach ($sitesdata as $i)
+			{
 				$rowArray = [];
 				foreach ((array) $i as $var => $value)
 				{
 					$rowArray[] = $value;
 				}
+
 				$objPHPExcel->getActiveSheet()->fromArray($rowArray, null, 'A' . $start);
 				$start++;
-			endforeach;
+			}
+
 			$objPHPExcel->getActiveSheet()->setTitle('Watchful.li sitelist');
 			$objPHPExcel->setActiveSheetIndex(0);
+
+			// Set Excel headers
 			header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 			header('Content-Disposition: attachment;filename="watchfulli_sitelist.' . date('Ymd') . '.' . date('His') . '.xlsx"');
 			header('Cache-Control: max-age=1');
@@ -134,6 +146,7 @@ if ($sitesdata)
 			header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
 			header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
 			header('Pragma: public'); // HTTP/1.0
+
 			$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
 			$objWriter->save('php://output');
 			exit;
@@ -143,45 +156,18 @@ if ($sitesdata)
 			$totalSites  = count($sitesdata);
 			$updateSites = 0;
 			$nrUpdates   = 0;
-			$tableHtml   = '<table id="WFTable" class="table">';
-			$tableHtml .= '<thead>';
-			$tableHtml .= '<tr>';
-			$tableHtml .= '<th>site id</th>';
-			$tableHtml .= '<th>url</th>';
-			$tableHtml .= '<th>joomla</th>';
-			$tableHtml .= '<th>up</th>';
-			$tableHtml .= '<th>updates</th>';
-			$tableHtml .= '<th>ip</th>';
-			$tableHtml .= '<th>webserver</th>';
-			$tableHtml .= '<th>php</th>';
-			$tableHtml .= '<th>mysql</th>';
-			$tableHtml .= '</tr>';
-			$tableHtml .= '</thead>';
-			$tableHtml .= '<tbody>';
+
 			// Process all sites, build HTML table of site data
-			foreach ($sitesdata as $site) :
+			foreach ($sitesdata as $site)
+			{
 				if (!$updates || ($updates && $site->nbUpdates > 0))
 				{
-					$siteData   = "<a target='_blank' href='" . $site->access_url . "'>Frontend</a><br/><a target='_blank' href='" . $site->admin_url . "'>Administrator</a>";
-					$siteStatus = ($site->up == 2) ? '<span class="text-success"><i class="fa fa-check"></i></span>' : '<span class="text-danger"><i class="fa times-circle"></i></span>';
-					$tableHtml .= '<tr>';
-					$tableHtml .= '<td class="siteid">' . $site->siteid . '</td>';
-					$tableHtml .= '<td class="url"><a data-toggle="popover" title="' . $site->name . '" data-html="true" data-placement="top" data-content="' . $siteData . '">' . $site->access_url . '</a></td>';
-					$tableHtml .= '<td class="jversion">' . $site->j_version . '</td>';
-					$tableHtml .= '<td class="sitestatus">' . $siteStatus . '</td>';
-					$tableHtml .= '<td class="updates">' . ($site->nbUpdates > 0 ? '<span class="text-danger">yes (' . $site->nbUpdates . ')</span>' : 'no') . '</td>';
-					$tableHtml .= '<td class="ip">' . $site->ip . '</td>';
-					$tableHtml .= '<td class="apache">' . $site->server_version . '</td>';
-					$tableHtml .= '<td class="php">' . $site->php_version . '</td>';
-					$tableHtml .= '<td class="mysql">' . $site->mysql_version . '</td>';
-					$tableHtml .= '</tr>';
-					unset($site->tags);
 					if ($site->nbUpdates > 0) $updateSites++;
 					$nrUpdates += $site->nbUpdates;
 				}
-			endforeach;
-			$tableHtml .= '</tbody>';
-			$tableHtml .= '</table>';
+			}
+
+			break;
 	}
 }
 ?>
@@ -233,7 +219,6 @@ if ($sitesdata)
 	<div class="container">
 		<h1>Watchful.li sitelist</h1>
 
-
 		<?php if ($sitesdata): ?>
 			<div class="row">
 				<div class="col-md-7">
@@ -262,17 +247,20 @@ if ($sitesdata)
 	<?php if ($sitesdata): ?>
 		<div class="row">
 			<div class="col-md-8">
-				<p>Show/hide columns:&nbsp;
-					<a class="show-all-columns">show all</a>&nbsp;|&nbsp;
-					<a class="toggle-vis" data-column="0">site id</a>&nbsp;|&nbsp;
-					<a class="toggle-vis" data-column="2">joomla</a>&nbsp;|&nbsp;
-					<a class="toggle-vis" data-column="3">up</a>&nbsp;|&nbsp;
-					<a class="toggle-vis" data-column="4">updates</a>&nbsp;|&nbsp;
-					<a class="toggle-vis" data-column="5">ip</a>&nbsp;|&nbsp;
-					<a class="toggle-vis" data-column="6">webserver</a>&nbsp;|&nbsp;
-					<a class="toggle-vis" data-column="7">php</a>&nbsp;|&nbsp;
-					<a class="toggle-vis" data-column="8">mysql</a>
-				</p>
+				<div class="btn-toolbar">
+					<div class="btn-group">Show/hide columns:</div>
+					<div class="btn-group" role="group" aria-label="Toggle Columns">
+						<button type="button" class="btn btn-primary btn-sm show-all-columns">show all</button>
+						<button type="button" class="btn btn-default btn-sm toggle-vis active" data-column="0">site id</button>
+						<button type="button" class="btn btn-default btn-sm toggle-vis active" data-column="2">joomla</button>
+						<button type="button" class="btn btn-default btn-sm toggle-vis active" data-column="3">up</button>
+						<button type="button" class="btn btn-default btn-sm toggle-vis active" data-column="4">updates</button>
+						<button type="button" class="btn btn-default btn-sm toggle-vis active" data-column="5">ip</button>
+						<button type="button" class="btn btn-default btn-sm toggle-vis active" data-column="6">webserver</button>
+						<button type="button" class="btn btn-default btn-sm toggle-vis active" data-column="7">php</button>
+						<button type="button" class="btn btn-default btn-sm toggle-vis active" data-column="8">mysql</button>
+					</div>
+				</div>
 			</div>
 			<div class="col-md-4">
 				<p class="pull-right">Showing
@@ -280,53 +268,113 @@ if ($sitesdata)
 				</p>
 			</div>
 		</div>
-		<?php echo $tableHtml; ?>
+
+		<hr>
+
+		<table id="WFTable" class="table">
+			<thead>
+			<tr>
+				<th>site id</th>
+				<th>url</th>
+				<th>joomla</th>
+				<th>up</th>
+				<th>updates</th>
+				<th>ip</th>
+				<th>webserver</th>
+				<th>php</th>
+				<th>mysql</th>
+			</tr>
+			</thead>
+			<tbody>
+			<?php foreach ($sitesdata as $site): ?>
+				<?php $siteData = "<a target='_blank' href='" . $site->access_url . "'>Frontend</a><br/><a target='_blank' href='" . $site->admin_url . "'>Administrator</a>"; ?>
+				<tr>
+					<td class="siteid"><?php echo $site->siteid; ?></td>
+					<td class="url">
+						<a data-toggle="popover" title="<?php echo $site->name; ?>" data-html="true" data-placement="top" data-content="<?php echo $siteData; ?>"><?php echo $site->access_url; ?></a>
+					</td>
+					<td class="jversion"><?php echo $site->j_version; ?></td>
+					<td class="sitestatus">
+						<?php if ($site->up == 2): ?>
+							<span class="text-success"><i class="fa fa-check"></i></span>
+						<?php else: ?>
+							<span class="text-danger"><i class="fa times-circle"></i></span>
+						<?php endif; ?>
+					</td>
+					<td class="updates">
+						<?php if ($site->nbUpdates > 0): ?>
+							<span class="text-danger">yes (<?php echo $site->nbUpdates; ?>)</span>
+						<?php else: ?>
+							no
+						<?php endif; ?>
+					</td>
+					<td class="ip"><?php echo $site->ip; ?></td>
+					<td class="apache"><?php echo $site->server_version; ?></td>
+					<td class="php"><?php echo $site->php_version; ?></td>
+					<td class="mysql"><?php echo $site->mysql_version; ?></td>
+				</tr>
+			<?php endforeach; ?>
+			</tbody>
+		</table>
 	<?php else: ?>
 		<div class="alert alert-danger" role="alert"><?php echo $watchfulerror; ?></div>
 	<?php endif; ?>
+
 	<hr>
+
 	<footer>
 		<p style="font-size: 12px;">Data collected <i class="fa fa-calendar"></i> <?php echo date("Y-m-d"); ?>
 			<i class="fa fa-clock-o"></i> <?php echo date("H:i:s"); ?>, written by
-			<a href="https://about.me/renekreijveld" target="_blank">René Kreijveld</a>. <i class="fa fa-github"></i>
-			<a href="https://github.com/renekreijveld/Watchful.li-sitelist" target="_blank">View on Github</a> All data collected through
-			<a href="https://watchful.li/support-services/kb/article/watchful-rest-api" target="_blank">Watchful REST API</a>. Display with
-			<a href="https://www.datatables.net" target="_blank">jQuery DataTables plugin</a>.</p>
+			<a href="https://about.me/renekreijveld" target="_blank">René Kreijveld</a>.
+			<i class="fa fa-github"></i>
+			<a href="https://github.com/renekreijveld/Watchful.li-sitelist" target="_blank">View on Github</a>.
+			All data collected through
+			<a href="https://watchful.li/support-services/kb/article/watchful-rest-api" target="_blank">Watchful REST API</a>.
+			Display with <a href="https://www.datatables.net" target="_blank">jQuery DataTables plugin</a>.
+		</p>
 	</footer>
 </div>
+
 <script>
 	function showUpdates() {
 		$('#WFTable').DataTable().column(4).search('yes').draw();
 	}
+
 	function showAll() {
 		$('#WFTable').DataTable().column(4).search('').draw();
 	}
+
 	$(document).ready(function () {
 		var table = $('#WFTable').DataTable({
 			stateSave: true,
 			autoWidth: false
 		});
+
 		$(".showupdates").click(function () {
 			showUpdates();
 		});
+
 		$(".showallsites").click(function () {
 			showAll();
 		});
-		table.on('draw', function () {
-			$('.url a').popover();
-		});
+
 		$(".show-all-columns").click(function () {
 			table.columns().visible(true);
+			$('.toggle-vis').addClass('active');
 		});
-		$('a.toggle-vis').on('click', function (e) {
+
+		$('.toggle-vis').on('click', function (e) {
 			e.preventDefault();
 			// Get the column API object
 			var column = table.column($(this).attr('data-column'));
 			// Toggle the visibility
 			column.visible(!column.visible());
+			$(this).toggleClass('active');
 		});
+
+		$('.url a').popover();
 	});
-	$('.url a').popover();
 </script>
+
 </body>
 </html>

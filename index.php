@@ -38,46 +38,66 @@ function getUrl()
 /** Include PHPExcel */
 require_once dirname(__FILE__) . '/PHPExcel.php';
 
-// Setup curl call, request json format
-if (SHOW_ONLY_PUBLISHED)
+// Demo data as sitedata
+if (SHOW_DEMO_DATA)
 {
-	$ch = curl_init(BASE_URL . '/sites?published=1&limit=100&order=access_url+');
+	$sitesdata = $demoData;
 }
-else
-{
-	$ch = curl_init(BASE_URL . '/sites?limit=100&order=access_url+');
-}
-$options = array(
-	CURLOPT_RETURNTRANSFER => true,
-	CURLOPT_SSL_VERIFYPEER => false,
-	CURLOPT_CUSTOMREQUEST  => 'GET',
-	CURLOPT_HTTPHEADER     => array(
-		'api_key: ' . API_KEY,
-		'Content-type: application/json',
-		'Accept: application/json'
-	),
-);
-curl_setopt_array($ch, ($options));
-if (!SHOW_DEMO_DATA) $watchful = json_decode(curl_exec($ch));
 
-if (!$watchful->error || SHOW_DEMO_DATA) :
-	if (SHOW_DEMO_DATA)
+// Real data as sitedata
+if (!SHOW_DEMO_DATA)
+{
+	// Setup curl call, request json format
+	if (SHOW_ONLY_PUBLISHED)
 	{
-		$sitesdata = $demoData;
+		$ch = curl_init(BASE_URL . '/sites?published=1&limit=100&order=access_url+');
 	}
 	else
 	{
-		$sitesdata = $watchful->msg->data;
+		$ch = curl_init(BASE_URL . '/sites?limit=100&order=access_url+');
 	}
 
-	$task    = $_GET["task"];
+	$options = array(
+		CURLOPT_RETURNTRANSFER => true,
+		CURLOPT_SSL_VERIFYPEER => false,
+		CURLOPT_CUSTOMREQUEST  => 'GET',
+		CURLOPT_HTTPHEADER     => array(
+			'api_key: ' . API_KEY,
+			'Content-type: application/json',
+			'Accept: application/json'
+		),
+	);
+
+	curl_setopt_array($ch, ($options));
+
+	// Get Watchful response
+	$watchful = json_decode(curl_exec($ch));
+
+	// Website data and errors
+	if (isset($watchful->msg->data))
+	{
+		$sitesdata     = $watchful->msg->data;
+		$watchfulerror = null;
+	}
+	else
+	{
+		$sitesdata     = null;
+		$watchfulerror = $watchful->msg;
+	}
+}
+
+// Process website data
+if ($sitesdata)
+{
+	$task    = isset($_GET["task"]) ? $_GET["task"] : "showlist";
 	$updates = false;
+
 	if ($task == "showupdates")
 	{
 		$updates = true;
 		$task    = "showlist";
 	}
-	if (is_null($task)) $task = "showlist";
+
 	switch ($task)
 	{
 		case "doexcel":
@@ -118,6 +138,7 @@ if (!$watchful->error || SHOW_DEMO_DATA) :
 			$objWriter->save('php://output');
 			exit;
 			break;
+
 		case "showlist":
 			$totalSites  = count($sitesdata);
 			$updateSites = 0;
@@ -162,9 +183,9 @@ if (!$watchful->error || SHOW_DEMO_DATA) :
 			$tableHtml .= '</tbody>';
 			$tableHtml .= '</table>';
 	}
-endif;
-
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -211,49 +232,58 @@ endif;
 <div class="jumbotron">
 	<div class="container">
 		<h1>Watchful.li sitelist</h1>
-		<div class="row">
-			<div class="col-md-7">
-				<h3>
-					Websites: <span class="label label-success"><?php echo $totalSites; ?></span>&nbsp;
-					Sites with updates:
-					<span class="label label-<?php echo ($updateSites == 0) ? 'success' : 'danger'; ?>"><?php echo $updateSites; ?></span>&nbsp;
-					Updates:
-					<span class="label label-<?php echo ($nrUpdates == 0) ? 'success' : 'danger'; ?>"><?php echo $nrUpdates; ?></span>
-				</h3>
+
+
+		<?php if ($sitesdata): ?>
+			<div class="row">
+				<div class="col-md-7">
+					<h3>
+						Websites: <span class="label label-success"><?php echo $totalSites; ?></span>&nbsp;
+						Sites with updates:
+						<span class="label label-<?php echo ($updateSites == 0) ? 'success' : 'danger'; ?>"><?php echo $updateSites; ?></span>&nbsp;
+						Updates:
+						<span class="label label-<?php echo ($nrUpdates == 0) ? 'success' : 'danger'; ?>"><?php echo $nrUpdates; ?></span>
+					</h3>
+				</div>
+				<div class="col-md-5">
+					<p class="pull-right">
+						<a href="#" class="btn btn-danger showupdates"><i class="fa fa-bolt"></i> Updates</a>&nbsp;
+						<a href="#" class="btn btn-primary showallsites"><i class="fa fa-list"></i> All sites</a>&nbsp;
+						<a href="<?php echo getUrl(); ?>" class="btn btn-primary"><i class="fa fa-refresh"></i> Refresh</a>&nbsp;
+						<a target="_blank" href="<?php echo getUrl() . '?task=doexcel'; ?>" class="btn btn-success"><i class="fa fa-table"></i> Excel export</a>
+					</p>
+				</div>
 			</div>
-			<div class="col-md-5">
-				<p class="pull-right">
-					<a href="#" class="btn btn-danger showupdates"><i class="fa fa-bolt"></i> Updates</a>&nbsp;
-					<a href="#" class="btn btn-primary showallsites"><i class="fa fa-list"></i> All sites</a>&nbsp;
-					<a href="<?php echo getUrl(); ?>" class="btn btn-primary"><i class="fa fa-refresh"></i> Refresh</a>&nbsp;
-					<a target="_blank" href="<?php echo getUrl() . '?task=doexcel'; ?>" class="btn btn-success"><i class="fa fa-table"></i> Excel export</a>
-				</p>
-			</div>
-		</div>
+		<?php endif; ?>
 	</div>
 </div>
 
 <div class="container">
-	<div class="row">
-		<div class="col-md-8">
-			<p>Show/hide columns:&nbsp;
-				<a class="show-all-columns">show all</a>&nbsp;|&nbsp;
-				<a class="toggle-vis" data-column="0">site id</a>&nbsp;|&nbsp;
-				<a class="toggle-vis" data-column="2">joomla</a>&nbsp;|&nbsp;
-				<a class="toggle-vis" data-column="3">up</a>&nbsp;|&nbsp;
-				<a class="toggle-vis" data-column="4">updates</a>&nbsp;|&nbsp;
-				<a class="toggle-vis" data-column="5">ip</a>&nbsp;|&nbsp;
-				<a class="toggle-vis" data-column="6">webserver</a>&nbsp;|&nbsp;
-				<a class="toggle-vis" data-column="7">php</a>&nbsp;|&nbsp;
-				<a class="toggle-vis" data-column="8">mysql</a>
-			</p>
+	<?php if ($sitesdata): ?>
+		<div class="row">
+			<div class="col-md-8">
+				<p>Show/hide columns:&nbsp;
+					<a class="show-all-columns">show all</a>&nbsp;|&nbsp;
+					<a class="toggle-vis" data-column="0">site id</a>&nbsp;|&nbsp;
+					<a class="toggle-vis" data-column="2">joomla</a>&nbsp;|&nbsp;
+					<a class="toggle-vis" data-column="3">up</a>&nbsp;|&nbsp;
+					<a class="toggle-vis" data-column="4">updates</a>&nbsp;|&nbsp;
+					<a class="toggle-vis" data-column="5">ip</a>&nbsp;|&nbsp;
+					<a class="toggle-vis" data-column="6">webserver</a>&nbsp;|&nbsp;
+					<a class="toggle-vis" data-column="7">php</a>&nbsp;|&nbsp;
+					<a class="toggle-vis" data-column="8">mysql</a>
+				</p>
+			</div>
+			<div class="col-md-4">
+				<p class="pull-right">Showing
+					<strong><?php echo(SHOW_DEMO_DATA ? 'demo data' : 'live data from Watchful.li'); ?></strong>
+				</p>
+			</div>
 		</div>
-		<div class="col-md-4">
-			<p class="pull-right">Showing
-				<strong><?php echo(SHOW_DEMO_DATA ? 'demo data' : 'live data from Watchful.li'); ?></strong></p>
-		</div>
-	</div>
-	<?php echo $tableHtml; ?>
+		<?php echo $tableHtml; ?>
+	<?php else: ?>
+		<div class="alert alert-danger" role="alert"><?php echo $watchfulerror; ?></div>
+	<?php endif; ?>
 	<hr>
 	<footer>
 		<p style="font-size: 12px;">Data collected <i class="fa fa-calendar"></i> <?php echo date("Y-m-d"); ?>

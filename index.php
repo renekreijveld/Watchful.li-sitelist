@@ -27,7 +27,7 @@ $watchfulerror = null;
 // Demo data as sitedata
 if (SHOW_DEMO_DATA)
 {
-	$sitesdata = $demoData;
+	$sitesdata = $demoSitesData;
 }
 
 // Real data as sitedata
@@ -265,6 +265,7 @@ if ($sitesdata)
 				<th>webserver</th>
 				<th>php</th>
 				<th>mysql</th>
+				<th>details</th>
 			</tr>
 			</thead>
 			<tbody>
@@ -301,6 +302,9 @@ if ($sitesdata)
 					</td>
 					<td class="mysql">
 						<?php echo $site->mysql_version; ?>
+					</td>
+					<td class="details">
+						<a class="btn btn-default btn-sm" href="site.php?id=<?php echo $site->siteid; ?>">Details</a>
 					</td>
 				</tr>
 			<?php endforeach; ?>

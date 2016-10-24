@@ -60,15 +60,13 @@ if (!SHOW_DEMO_DATA)
 	$watchful = json_decode(curl_exec($ch));
 
 	// Website data and errors
-	if (isset($watchful->msg->data))
+	if (isset($watchful->error) && $watchful->error)
 	{
-		$sitesdata     = $watchful->msg->data;
-		$watchfulerror = null;
+		$watchfulerror = $watchful->msg;
 	}
 	else
 	{
-		$sitesdata     = null;
-		$watchfulerror = $watchful->msg;
+		$sitesdata = $watchful->msg->data;
 	}
 }
 
@@ -193,13 +191,20 @@ if ($sitesdata)
 		.toggle-vis, .show-all-columns, .url a {
 			cursor: pointer;
 		}
+
+		.label-large {
+			font-size: 13px;
+		}
 	</style>
 </head>
 
 <body>
 <div class="jumbotron">
 	<div class="container">
-		<h1>Watchful.li sitelist</h1>
+		<h1 class="pull-left">Watchful.li sitelist</h1>
+		<p class="pull-right">Showing
+			<strong><?php echo(SHOW_DEMO_DATA ? 'demo data' : 'live data from Watchful.li'); ?></strong>
+		</p>
 
 		<?php if ($sitesdata): ?>
 			<div class="row">
@@ -234,8 +239,8 @@ if ($sitesdata)
 					<div class="btn-group" role="group" aria-label="Toggle Columns">
 						<button type="button" class="btn btn-primary btn-sm show-all-columns">show all</button>
 						<button type="button" class="btn btn-default btn-sm toggle-vis active" data-column="0">site id</button>
-						<button type="button" class="btn btn-default btn-sm toggle-vis active" data-column="2">joomla</button>
-						<button type="button" class="btn btn-default btn-sm toggle-vis active" data-column="3">up</button>
+						<button type="button" class="btn btn-default btn-sm toggle-vis active" data-column="2">up</button>
+						<button type="button" class="btn btn-default btn-sm toggle-vis active" data-column="3">joomla</button>
 						<button type="button" class="btn btn-default btn-sm toggle-vis active" data-column="4">updates</button>
 						<button type="button" class="btn btn-default btn-sm toggle-vis active" data-column="5">ip</button>
 						<button type="button" class="btn btn-default btn-sm toggle-vis active" data-column="6">webserver</button>
@@ -243,11 +248,6 @@ if ($sitesdata)
 						<button type="button" class="btn btn-default btn-sm toggle-vis active" data-column="8">mysql</button>
 					</div>
 				</div>
-			</div>
-			<div class="col-md-4">
-				<p class="pull-right">Showing
-					<strong><?php echo(SHOW_DEMO_DATA ? 'demo data' : 'live data from Watchful.li'); ?></strong>
-				</p>
 			</div>
 		</div>
 
@@ -258,8 +258,8 @@ if ($sitesdata)
 			<tr>
 				<th>site id</th>
 				<th>url</th>
-				<th>joomla</th>
 				<th>up</th>
+				<th>joomla</th>
 				<th>updates</th>
 				<th>ip</th>
 				<th>webserver</th>
@@ -271,11 +271,12 @@ if ($sitesdata)
 			<?php foreach ($sitesdata as $site): ?>
 				<?php $siteData = "<a target='_blank' href='" . $site->access_url . "'>Frontend</a><br/><a target='_blank' href='" . $site->admin_url . "'>Administrator</a>"; ?>
 				<tr>
-					<td class="siteid"><?php echo $site->siteid; ?></td>
+					<td class="siteid">
+						<?php echo $site->siteid; ?>
+					</td>
 					<td class="url">
 						<a data-toggle="popover" title="<?php echo $site->name; ?>" data-html="true" data-placement="top" data-content="<?php echo $siteData; ?>"><?php echo $site->access_url; ?></a>
 					</td>
-					<td class="jversion"><?php echo $site->j_version; ?></td>
 					<td class="sitestatus">
 						<?php if ($site->up == 2): ?>
 							<span class="text-success"><i class="fa fa-check"></i></span>
@@ -283,17 +284,24 @@ if ($sitesdata)
 							<span class="text-danger"><i class="fa times-circle"></i></span>
 						<?php endif; ?>
 					</td>
-					<td class="updates">
-						<?php if ($site->nbUpdates > 0): ?>
-							<span class="text-danger">yes (<?php echo $site->nbUpdates; ?>)</span>
-						<?php else: ?>
-							no
-						<?php endif; ?>
+					<td class="jversion">
+						<span class="label label-large label-<?php echo ($site->new_j_version) ? 'danger' : 'success'; ?>"><i class="fa fa-joomla"></i> <?php echo $site->j_version; ?></span>
 					</td>
-					<td class="ip"><?php echo $site->ip; ?></td>
-					<td class="apache"><?php echo $site->server_version; ?></td>
-					<td class="php"><?php echo $site->php_version; ?></td>
-					<td class="mysql"><?php echo $site->mysql_version; ?></td>
+					<td class="updates">
+						<span class="label label-large label-<?php echo ($site->nbUpdates > 0) ? 'danger' : 'success'; ?>"><?php echo ($site->nbUpdates > 0) ? 'yes (' . $site->nbUpdates . ')' : 'no'; ?></span>
+					</td>
+					<td class="ip">
+						<?php echo $site->ip; ?>
+					</td>
+					<td class="apache">
+						<?php echo $site->server_version; ?>
+					</td>
+					<td class="php">
+						<?php echo $site->php_version; ?>
+					</td>
+					<td class="mysql">
+						<?php echo $site->mysql_version; ?>
+					</td>
 				</tr>
 			<?php endforeach; ?>
 			</tbody>
@@ -329,7 +337,8 @@ if ($sitesdata)
 	$(document).ready(function () {
 		var table = $('#WFTable').DataTable({
 			stateSave: true,
-			autoWidth: false
+			autoWidth: false,
+			pageLength: 100
 		});
 
 		$(".showupdates").click(function () {

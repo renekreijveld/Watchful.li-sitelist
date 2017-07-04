@@ -36,11 +36,11 @@ if (!SHOW_DEMO_DATA)
 	// Setup curl call, request json format
 	if (SHOW_ONLY_PUBLISHED)
 	{
-		$ch = curl_init(BASE_URL . '/sites?published=1&limit=100&order=access_url+');
+		$ch = curl_init(BASE_URL . '/sites?published=1&limit=100&order=access_url+&api_key=' . API_KEY);
 	}
 	else
 	{
-		$ch = curl_init(BASE_URL . '/sites?limit=100&order=access_url+');
+		$ch = curl_init(BASE_URL . '/sites?limit=100&order=access_url+&api_key=' . API_KEY);
 	}
 
 	$options = array(
@@ -48,7 +48,6 @@ if (!SHOW_DEMO_DATA)
 		CURLOPT_SSL_VERIFYPEER => false,
 		CURLOPT_CUSTOMREQUEST  => 'GET',
 		CURLOPT_HTTPHEADER     => array(
-			'api_key: ' . API_KEY,
 			'Content-type: application/json',
 			'Accept: application/json'
 		),

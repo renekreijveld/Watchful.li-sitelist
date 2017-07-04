@@ -39,14 +39,13 @@ if (!$siteID)
 if ($siteID && !SHOW_DEMO_DATA)
 {
 	// Get Site Details
-	$ch = curl_init(BASE_URL . '/sites/' . $siteID);
+	$ch = curl_init(BASE_URL . '/sites/' . $siteID . '&api_key=' . API_KEY);
 
 	$options = array(
 		CURLOPT_RETURNTRANSFER => true,
 		CURLOPT_SSL_VERIFYPEER => false,
 		CURLOPT_CUSTOMREQUEST  => 'GET',
 		CURLOPT_HTTPHEADER     => array(
-			'api_key: ' . API_KEY,
 			'Content-type: application/json',
 			'Accept: application/json'
 		),
@@ -68,14 +67,13 @@ if ($siteID && !SHOW_DEMO_DATA)
 	}
 
 	// Get Site Log
-	$ch = curl_init(BASE_URL . '/logs?idx_site=' . $siteID . '&order=id_log-&limit=100');
+	$ch = curl_init(BASE_URL . '/logs?idx_site=' . $siteID . '&order=id_log-&limit=100&api_key=' . API_KEY);
 
 	$options = array(
 		CURLOPT_RETURNTRANSFER => true,
 		CURLOPT_SSL_VERIFYPEER => false,
 		CURLOPT_CUSTOMREQUEST  => 'GET',
 		CURLOPT_HTTPHEADER     => array(
-			'api_key: ' . API_KEY,
 			'Content-type: application/json',
 			'Accept: application/json'
 		),
@@ -97,14 +95,13 @@ if ($siteID && !SHOW_DEMO_DATA)
 	}
 
 	// Get Site Extensions
-	$ch = curl_init(BASE_URL . '/sites/' . $siteID . '/extensions?limit=100');
+	$ch = curl_init(BASE_URL . '/sites/' . $siteID . '/extensions?limit=100&api_key=' . API_KEY);
 
 	$options = array(
 		CURLOPT_RETURNTRANSFER => true,
 		CURLOPT_SSL_VERIFYPEER => false,
 		CURLOPT_CUSTOMREQUEST  => 'GET',
 		CURLOPT_HTTPHEADER     => array(
-			'api_key: ' . API_KEY,
 			'Content-type: application/json',
 			'Accept: application/json'
 		),
